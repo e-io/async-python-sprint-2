@@ -3,7 +3,11 @@ from time import sleep
 
 from job import Job
 from logger import logger
-from types import Request, Response, ResponseStatus
+from types import (
+    Request,
+    Response,
+    ResponseStatus
+)
 
 
 class Scheduler:
@@ -26,7 +30,7 @@ class Scheduler:
             space = self.__pool_size - len(self.__pool)  # must be >=0
             if space and self.__pending:
                 task = self.__pending.pop(0)
-                task.run()
+                task()
                 self.__pool.append(task)
             if not self.__pool:
                 continue  # so, it will sleep for a __tick again
@@ -34,12 +38,16 @@ class Scheduler:
             for (i, task) in enumerate(self.__pool):
                 task.send(Request.status)
                 response: Response = next(task)
-                logger.debug(response)
+                if response.status is ResponseStatus.progress:
+                    pass
+                if response.status is ResponseStatus.result:
+                    logger.debug(f"{task.get_id()}: {response.new_results}")
                 if response.status is ResponseStatus.finish:
                     finish.append(i)
+
             for i in finish:
                 task = self.__pool.pop(i)
-                self.__ready.append(i)
+                self.__ready.append(task)
 
     def restart(self):
         pass
