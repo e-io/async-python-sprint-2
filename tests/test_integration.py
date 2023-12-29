@@ -17,12 +17,19 @@ def fixture_default():
     b = 11
     return power, a, b
 
+def power(a, b):
+    sleep(1)
+    a **= b
+    return a
 
 def test_2jobs(fixture_default: tuple):
-    power, a, b = fixture_default
+    #power, a, b = fixture_default
 
-    job1 = Job(targets=[partial(power, a, b),])
-    job2 = Job(targets=[partial(power, a, b),])
+
+
+
+    job1 = Job([power]) #targets=[partial(power, a, b),])
+    job2 = Job([power]) #targets=[partial(power, a, b),])
     scheduler = Scheduler()
 
     for job in (job1, job2):

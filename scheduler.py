@@ -31,18 +31,24 @@ class Scheduler:
             space = self.__pool_size - len(self.__pool)  # must be >=0
             if space and self.__pending:
                 job = self.__pending.pop(0)
-                job.loop()
-                self.__pool.append(job)
+                loop = job.loop()
+                next(loop)
+                #logger.debug(f'debuuuuug {type(job.loop)}')
+                #exit(1)
+                self.__pool.append(loop)
             if not self.__pool:
                 continue  # so, it will sleep for a __tick again
             finish: list[int] = []
-            for (i, job) in enumerate(self.__pool):
-                job.loop.send(Request.report_status)
-                response: Response = next(job)
+            for (i, loop) in enumerate(self.__pool):
+                logger.debug('here')
+                next(loop)
+                loop.send(Request.report_status)
+                logger.debug('here1')
+                response: Response = next(loop)
                 if response.status is ResponseStatus.progress:
                     pass
                 if response.status is ResponseStatus.result:
-                    logger.debug(f"{job.get_id()}: {response.new_results}")
+                    logger.debug(f"{loop.get_id()}: {response.new_results}")
                 if response.status is ResponseStatus.finish:
                     finish.append(i)
 

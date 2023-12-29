@@ -32,7 +32,7 @@ class Job:
 
         name = ''
         for target in targets:
-            name += target.func.__name__
+            name += target.__name__
             if len(name) > Job.__max_id_length:
                 break
 
@@ -58,12 +58,15 @@ class Job:
         for i, target in enumerate(self.__targets):
 
             queue = Queue()
-            p = Process(target=Job.target_and_queue, args=(target, queue))
+            func = partial(Job.target_and_queue, target, queue)
+            p = Process(target=power, args=(3, 7))
             p.start()
             while True:
                 request: Request = yield
-
-                if request is Request.report_status:
+                logger.debug(request)
+                sleep(2)
+                if request == Request.report_status:
+                    logger.debug('')
                     if p.is_alive():
                         response: Response = Response(ResponseStatus.progress, None)
                         yield response
