@@ -1,23 +1,16 @@
 from configparser import ConfigParser
-from multiprocessing import Process, Queue
-from typing import Callable
 from functools import partial
+from multiprocessing import Process, Queue
+from time import sleep
+from typing import Callable
 
-from logger import logger
 from customtypes import Request, Response, ResponseStatus
+from logger import logger
 
 
-from functools import wraps
-
-
-def coroutine(f):
-    @wraps(f)  # https://docs.python.org/3/library/functools.html#functools.wraps
-    def wrap(*args, **kwargs):
-        gen = f(*args, **kwargs)
-        gen.send(None)
-        return gen
-    return wrap
-
+def power(a, b):
+    a **= b
+    return a
 
 class Job:
     all_id: {str: int} = {}  # str: int
@@ -61,7 +54,7 @@ class Job:
         queue.put(result)
 
     def loop(self) -> None:
-        yield None
+        yield
         for i, target in enumerate(self.__targets):
 
             queue = Queue()
@@ -75,8 +68,8 @@ class Job:
                         response: Response = Response(ResponseStatus.progress, None)
                         yield response
                         continue
-
-                    result = queue.get() if queue else None
+                    logger.debug('')
+                    result = None if queue.empty() else queue.get()
                     response: Response = Response(ResponseStatus.result, {i: result})
                     logger.debug(f"{self.__id}: {result}")
                     yield response

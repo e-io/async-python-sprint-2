@@ -26,6 +26,7 @@ class Scheduler:
 
     def run(self):
         while True:
+            logger.debug('')
             sleep(self.__tick)
             space = self.__pool_size - len(self.__pool)  # must be >=0
             if space and self.__pending:

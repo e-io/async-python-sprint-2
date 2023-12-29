@@ -15,5 +15,5 @@ class ResponseStatus(Enum):
 
 @dataclass
 class Response:
-    status = ResponseStatus
+    status: ResponseStatus
     new_results: dict[int, ...] = field(default_factory=lambda: {})
