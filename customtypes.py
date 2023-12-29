@@ -3,13 +3,13 @@ from dataclasses import dataclass, field
 
 
 class Request(Enum):
-    status = 'Report status'
+    report_status = 'Report status'
 
 
 class ResponseStatus(Enum):
     progress = 'I am in progress'
     result = 'Some results more are ready'
-    # result_finish = 'Result is ready. I am finished'
+    # result_finish = 'Result is ready. I am finished.'
     finish = 'I am finished'
 
 

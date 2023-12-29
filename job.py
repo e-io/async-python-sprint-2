@@ -1,9 +1,22 @@
 from configparser import ConfigParser
 from multiprocessing import Process, Queue
 from typing import Callable
+from functools import partial
 
 from logger import logger
-from types import Request, Response, ResponseStatus
+from customtypes import Request, Response, ResponseStatus
+
+
+from functools import wraps
+
+
+def coroutine(f):
+    @wraps(f)  # https://docs.python.org/3/library/functools.html#functools.wraps
+    def wrap(*args, **kwargs):
+        gen = f(*args, **kwargs)
+        gen.send(None)
+        return gen
+    return wrap
 
 
 class Job:
@@ -13,7 +26,7 @@ class Job:
     config.read('setup.cfg')
     __max_id_length = float(config['job']['max_id_length'])
 
-    def __init__(self, targets: [Callable],
+    def __init__(self, targets: [partial],
                  start_at: str = "",
                  max_working_time: int = -1,
                  tries: int = 0,
@@ -26,7 +39,7 @@ class Job:
 
         name = ''
         for target in targets:
-            name += target.__name__
+            name += target.func.__name__
             if len(name) > Job.__max_id_length:
                 break
 
@@ -47,7 +60,8 @@ class Job:
         result = str(target())
         queue.put(result)
 
-    def __call__(self):
+    def loop(self) -> None:
+        yield None
         for i, target in enumerate(self.__targets):
 
             queue = Queue()
@@ -56,7 +70,7 @@ class Job:
             while True:
                 request: Request = yield
 
-                if request.status is Request.status:
+                if request is Request.report_status:
                     if p.is_alive():
                         response: Response = Response(ResponseStatus.progress, None)
                         yield response

@@ -3,7 +3,7 @@ from time import sleep
 
 from job import Job
 from logger import logger
-from types import (
+from customtypes import (
     Request,
     Response,
     ResponseStatus
@@ -21,33 +21,33 @@ class Scheduler:
         config.read('setup.cfg')
         self.__tick = float(config['scheduler']['tick'])
 
-    def schedule(self, task: Job) -> None:
-        self.__pending.append(task)
+    def schedule(self, job: Job) -> None:
+        self.__pending.append(job)
 
     def run(self):
         while True:
             sleep(self.__tick)
             space = self.__pool_size - len(self.__pool)  # must be >=0
             if space and self.__pending:
-                task = self.__pending.pop(0)
-                task()
-                self.__pool.append(task)
+                job = self.__pending.pop(0)
+                job.loop()
+                self.__pool.append(job)
             if not self.__pool:
                 continue  # so, it will sleep for a __tick again
             finish: list[int] = []
-            for (i, task) in enumerate(self.__pool):
-                task.send(Request.status)
-                response: Response = next(task)
+            for (i, job) in enumerate(self.__pool):
+                job.loop.send(Request.report_status)
+                response: Response = next(job)
                 if response.status is ResponseStatus.progress:
                     pass
                 if response.status is ResponseStatus.result:
-                    logger.debug(f"{task.get_id()}: {response.new_results}")
+                    logger.debug(f"{job.get_id()}: {response.new_results}")
                 if response.status is ResponseStatus.finish:
                     finish.append(i)
 
             for i in finish:
-                task = self.__pool.pop(i)
-                self.__ready.append(task)
+                job = self.__pool.pop(i)
+                self.__ready.append(job)
 
     def restart(self):
         pass
