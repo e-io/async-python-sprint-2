@@ -8,28 +8,27 @@ from logger import logger
 from scheduler import Scheduler
 
 @fixture
-def fixture_default():
-    def power(a, b):
-        sleep(1)
-        a **= b
-        return a
-    a = 9
-    b = 11
-    return power, a, b
+def fixture_for_power():
+    tuple_ = ((2, 4),
+              (3, 5),
+              )
+
+    return tuple_
 
 def power(a, b):
     sleep(1)
+    logger.debug(f'I am "power". {a}**{b} = {a ** b}')
     a **= b
     return a
 
-def test_2jobs(fixture_default: tuple):
-    #power, a, b = fixture_default
 
-    job1 = Job([power]) #targets=[partial(power, a, b),])
-    job2 = Job([power]) #targets=[partial(power, a, b),])
+def test_2jobs(fixture_for_power: tuple):
+    tuples = fixture_for_power
+
+    jobs = [Job([partial(power, *args_)]) for args_ in tuples]
     scheduler = Scheduler()
 
-    for job in (job1, job2):
+    for job in jobs:
         scheduler.schedule(job)
 
     scheduler.run()

@@ -8,11 +8,11 @@ from customtypes import Request, Response, ResponseStatus
 from logger import logger
 
 
-def power(a, b):
-    a **= b
-    return a
-
 class Job:
+    """
+    Job works with a list of tasks,
+    each task should be a 'functools.partial' with a target function and arguments.
+    """
     all_id: {str: int} = {}  # str: int
 
     config = ConfigParser()
@@ -34,7 +34,7 @@ class Job:
 
         name = ''
         for target in targets:
-            name += target.__name__
+            name += target.func.__name__
             if len(name) > Job.__max_id_length:
                 break
 
@@ -54,17 +54,22 @@ class Job:
     def target_and_queue(target: Callable, queue: Queue):
         result = str(target())
         queue.put(result)
+        logger.debug(f'Result {result} is put in the queue')
 
-    def start_loop(self) -> None:
+    def start_loop(self):
         """
+        target is functools.partial(func, arg1, arg2 ...)
         :return: coroutine
         """
         yield
         for i, target in enumerate(self.__targets):
 
             queue = Queue()
+
+            #_func = partial(power, 3, 7)
             func = partial(Job.target_and_queue, target, queue)
-            p = Process(target=power, args=(3, 7))
+
+            p = Process(target=func)
             p.start()
             while True:
                 request: Request = yield
@@ -78,8 +83,8 @@ class Job:
                         continue
                     logger.debug('')
                     result = None if queue.empty() else queue.get()
+                    logger.debug(f'{self.__id}: Result {result} is taken from the queue')
                     response: Response = Response(ResponseStatus.result, {i: result})
-                    logger.debug(f"{self.__id}: {result}")
                     yield response
                     break
 

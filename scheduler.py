@@ -45,10 +45,12 @@ class Scheduler:
                 job.loop.send(Request.report_status)
                 logger.debug('here1')
                 response: Response = next(job.loop)
+                logger.debug(f'Scheduler got response "{response.status.value}"')
                 if response.status is ResponseStatus.waiting:
                     pass
                 if response.status is ResponseStatus.result:
                     logger.debug(f"{job.loop.get_id()}: {response.new_results}")
+
                 if response.status is ResponseStatus.finish:
                     finish.append(i)
 
