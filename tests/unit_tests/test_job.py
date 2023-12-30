@@ -1,28 +1,30 @@
-from pytest import fixture, raises, mark
+from functools import partial
+from random import randint
 
-from time import sleep
+from pytest import fixture
 
-from logger import logger
 from job import Job
+from logger import logger
 
 
-# @fixture
+def square(a):
+    a **= 2
+    return a
 
-def function_squares():
-    max_ = 5
-    for i in range(0, max_):
-        sleep(1)
-        result = i ** 2
-        yield result
 
-def test_init():
-    job = Job(target=function_squares)
-    id = job.get_id()
-    logger.warning(f'job_id: {id}')
-    job.run()
+@fixture
+def fixture_for_square() -> int:
+    return randint(-10, 10)
+
+
+def test_correct_id(fixture_for_square) -> None:
+    job = Job(targets=[partial(square, fixture_for_square)])
+    id_ = job.get_id()
+    logger.debug(f"Job with job_id: '{id_}' is created.")
+    assert id_ == 'square' + '_01'
+
+
+def test_isinstance(fixture_for_square) -> None:
+    job = Job(targets=[partial(square, fixture_for_square)])
     assert isinstance(job, Job)
-
-
-def test_init_wrong():
-    job = Job(target=function_squares)
     assert not isinstance(job, str)

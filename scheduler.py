@@ -12,7 +12,7 @@ from customtypes import (
 
 class Scheduler:
     def __init__(self, pool_size: int = 10) -> None:
-        self.__pool_size: list[Job] = pool_size
+        self.__pool_size: int = pool_size
         self.__pending: list[Job] = []
         self.__pool: list[Job] = []
         self.__ready: list[Job] = []
@@ -24,7 +24,7 @@ class Scheduler:
     def schedule(self, job: Job) -> None:
         self.__pending.append(job)
 
-    def run(self):
+    def run(self) -> None:
         while True:
             logger.debug('')
             sleep(self.__tick)
@@ -61,14 +61,14 @@ class Scheduler:
         logger.debug(f"Scheduler finished its work. "
                      f"Finished jobs: {len(self.__ready)}")
 
-    def restart(self):
-        pass
-
-    def stop(self):
-        pass
-
-    def __backup(self):
+    def restart(self) -> None:
         ...
 
-    def __restore(self):
+    def stop(self) -> None:
+        ...
+
+    def __backup(self) -> None:
+        ...
+
+    def __restore(self) -> None:
         ...

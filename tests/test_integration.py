@@ -1,6 +1,7 @@
 from configparser import ConfigParser
 from functools import partial
 from time import sleep
+from typing import Any
 
 from pytest import fixture
 
@@ -21,7 +22,7 @@ def power(a, b):
 
 
 @fixture
-def fixture_for_power():
+def fixture_for_power() -> Any:
     tuples = ((2, 4),
               (3, 5),
               (5, 4),

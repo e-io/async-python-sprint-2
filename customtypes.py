@@ -1,6 +1,8 @@
 from enum import Enum
 from dataclasses import dataclass, field
 
+from typing import Any
+
 
 class Request(Enum):
     report_status = 'Report status'
@@ -18,4 +20,4 @@ class ResponseStatus(Enum):
 @dataclass
 class Response:
     status: ResponseStatus
-    new_results: dict[int, ...] = field(default_factory=lambda: {})
+    new_results: None | dict[int, Any] = field(default_factory=lambda: {})
