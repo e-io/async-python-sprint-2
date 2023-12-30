@@ -9,11 +9,11 @@ def get_custom_logger():
     handler = logging.StreamHandler()
     handler.setFormatter(formatter)
 
-    logger = logging.getLogger('Default')
-    logger.setLevel(level='DEBUG')
-    logger.addHandler(handler)
+    __logger = logging.getLogger('Default')
+    __logger.setLevel(level='DEBUG')
+    __logger.addHandler(handler)
 
-    return logger
+    return __logger
 
 
 logger = get_custom_logger()

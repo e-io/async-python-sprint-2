@@ -45,7 +45,7 @@ class Scheduler:
                 loop.send(Request.report_status)
                 logger.debug('here1')
                 response: Response = next(loop)
-                if response.status is ResponseStatus.progress:
+                if response.status is ResponseStatus.waiting:
                     pass
                 if response.status is ResponseStatus.result:
                     logger.debug(f"{loop.get_id()}: {response.new_results}")

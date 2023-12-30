@@ -25,9 +25,6 @@ def power(a, b):
 def test_2jobs(fixture_default: tuple):
     #power, a, b = fixture_default
 
-
-
-
     job1 = Job([power]) #targets=[partial(power, a, b),])
     job2 = Job([power]) #targets=[partial(power, a, b),])
     scheduler = Scheduler()
@@ -36,3 +33,16 @@ def test_2jobs(fixture_default: tuple):
         scheduler.schedule(job)
 
     scheduler.run()
+
+
+def web_job():
+    ...
+
+
+def fs_job():
+    ...
+
+
+def multi_job():
+    ...
+

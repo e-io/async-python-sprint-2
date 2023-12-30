@@ -7,10 +7,12 @@ class Request(Enum):
 
 
 class ResponseStatus(Enum):
-    progress = 'I am in progress'
-    result = 'Some results more are ready'
-    # result_finish = 'Result is ready. I am finished.'
-    finish = 'I am finished'
+    # depend
+    # timeout
+    waiting = 'Task is in progress. Results are waiting.'  # former 'progress'
+    # error
+    result = 'A result of one task is ready.'
+    finish = 'All tasks (>=1) are finished.'
 
 
 @dataclass

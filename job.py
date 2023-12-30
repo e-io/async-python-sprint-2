@@ -18,6 +18,7 @@ class Job:
     config = ConfigParser()
     config.read('setup.cfg')
     __max_id_length = float(config['job']['max_id_length'])
+    __tick = float(config['scheduler']['tick'])
 
     def __init__(self, targets: [partial],
                  start_at: str = "",
@@ -64,11 +65,11 @@ class Job:
             while True:
                 request: Request = yield
                 logger.debug(request)
-                sleep(2)
+                sleep(3 * Job.__tick)
                 if request == Request.report_status:
                     logger.debug('')
                     if p.is_alive():
-                        response: Response = Response(ResponseStatus.progress, None)
+                        response: Response = Response(ResponseStatus.waiting, None)
                         yield response
                         continue
                     logger.debug('')
