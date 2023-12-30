@@ -30,6 +30,7 @@ class Job:
         self.max_working_time = max_working_time
         self.tries = tries
         self.dependencies = dependencies
+        self.loop = None  # main coroutine of this class
 
         name = ''
         for target in targets:
@@ -47,14 +48,17 @@ class Job:
         return self.__id
 
     def run(self):
-        ...
+        self.loop = self.start_loop()
 
     @staticmethod
     def target_and_queue(target: Callable, queue: Queue):
         result = str(target())
         queue.put(result)
 
-    def loop(self) -> None:
+    def start_loop(self) -> None:
+        """
+        :return: coroutine
+        """
         yield
         for i, target in enumerate(self.__targets):
 
