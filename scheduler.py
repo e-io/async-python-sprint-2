@@ -26,38 +26,46 @@ class Scheduler:
 
     def run(self) -> None:
         while True:
-            logger.debug('')
+            logger.debug("the begin of main 'while' cycle")
             sleep(self.__tick)
             space = self.__pool_size - len(self.__pool)  # must be >=0
 
-            if space and self.__pending:
+            for _ in range(space):
+                if not self.__pending:  # not targets anymore
+                    break
                 job = self.__pending.pop(0)
                 job.run()
+                logger.debug(f"Initial calling of 'next' for a job with id '{job.get_id()}'")
                 next(job.loop)
                 self.__pool.append(job)
 
             if not self.__pool:
                 break  # no job anymore
 
-            finish: list[int] = []
+            finished: list[int] = []  # indices of finished jobs
             for (i, job) in enumerate(self.__pool):
-                logger.debug('here')
+                logger.debug(f"A call of 'next' for {job.get_id()}")
                 next(job.loop)
-                job.loop.send(Request.report_status)
-                logger.debug('here1')
-                response: Response = next(job.loop)
-                logger.debug(f'Scheduler got response "{response.status.value}"')
+                logger.debug(f"Sending request to {job.get_id()}")
+                response: Response = job.loop.send(Request.report_status)
+                # logger.debug(f"A call of 'next' for {job.get_id()}")
+                # next(job.loop)
+                logger.debug(f"Scheduler got response '{response.status.value}'")
+
                 if response.status is ResponseStatus.waiting:
                     continue
                 if response.status is ResponseStatus.result:
-                    logger.debug(f"Scheduler got result  {response.new_results} from {job.loop.get_id()}")
-
+                    logger.debug(f"Scheduler got result  '{response.new_results}' from {job.get_id()}")
+                    continue
                 if response.status is ResponseStatus.finish:
-                    finish.append(i)
+                    finished.append(i)
 
-            for i in sorted(finish, reverse=True):
-                job = self.__pool.pop(i)
+            for i in finished:
+                job = self.__pool[i]
                 self.__ready.append(job)
+            for i in finished[::-1]:
+                self.__pool.pop(i)
+
         logger.debug(f"Scheduler finished its work. "
                      f"Finished jobs: {len(self.__ready)}")
 

@@ -87,14 +87,12 @@ class Job:
                     yield response
                     continue
 
-                logger.debug('')
                 if p.is_alive():
                     response = Response(ResponseStatus.waiting, None)
                     logger.debug(f"Job returns status '{ResponseStatus.waiting.value}'")
                     yield response
                     continue
 
-                logger.debug('')
                 result = None if queue.empty() else queue.get()
                 logger.debug(f'{self.__id}: Result {result} is taken from the queue')
                 response = Response(ResponseStatus.result, {i: result})
