@@ -15,8 +15,8 @@ TICK = float(config['scheduler']['tick'])
 
 
 def power(a, b):
-    sleep(TICK)
-    logger.debug(f'I am "power". {a}**{b} = {a ** b}')
+    sleep(10*TICK)
+    logger.debug(f"This is function 'power'. {a}**{b} = {a ** b}")
     a **= b
     return a
 

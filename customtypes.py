@@ -14,7 +14,7 @@ class ResponseStatus(Enum):
     waiting = 'Task is in progress. Results are waiting.'  # former 'progress'
     error = 'Exception is caught'
     result = 'A result of one task is ready.'
-    finish = 'All tasks (>=1) are finished.'
+    finish = 'All tasks of this specific job are finished.'
 
 
 @dataclass
