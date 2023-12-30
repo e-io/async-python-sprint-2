@@ -10,7 +10,7 @@ class ResponseStatus(Enum):
     # depend
     # timeout
     waiting = 'Task is in progress. Results are waiting.'  # former 'progress'
-    # error
+    error = 'Exception is caught'
     result = 'A result of one task is ready.'
     finish = 'All tasks (>=1) are finished.'
 

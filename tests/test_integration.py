@@ -1,3 +1,4 @@
+from configparser import ConfigParser
 from functools import partial
 from time import sleep
 
@@ -7,19 +8,25 @@ from job import Job
 from logger import logger
 from scheduler import Scheduler
 
-@fixture
-def fixture_for_power():
-    tuple_ = ((2, 4),
-              (3, 5),
-              )
+config = ConfigParser()
+config.read('setup.cfg')
+TICK = float(config['scheduler']['tick'])
 
-    return tuple_
 
 def power(a, b):
-    sleep(1)
+    sleep(TICK)
     logger.debug(f'I am "power". {a}**{b} = {a ** b}')
     a **= b
     return a
+
+
+@fixture
+def fixture_for_power():
+    tuples = ((2, 4),
+              (3, 5),
+              (5, 4),
+              )
+    return tuples
 
 
 def test_2jobs(fixture_for_power: tuple):

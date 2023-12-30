@@ -63,30 +63,34 @@ class Job:
         """
         yield
         for i, target in enumerate(self.__targets):
-
+            # Job do tasks one after another. Not in parallel
             queue = Queue()
-
-            #_func = partial(power, 3, 7)
             func = partial(Job.target_and_queue, target, queue)
-
             p = Process(target=func)
             p.start()
+
             while True:
                 request: Request = yield
-                logger.debug(request)
+                logger.debug(f"Job got request '{request.value}'")
                 sleep(3 * Job.__tick)
-                if request == Request.report_status:
-                    logger.debug('')
-                    if p.is_alive():
-                        response: Response = Response(ResponseStatus.waiting, None)
-                        yield response
-                        continue
-                    logger.debug('')
-                    result = None if queue.empty() else queue.get()
-                    logger.debug(f'{self.__id}: Result {result} is taken from the queue')
-                    response: Response = Response(ResponseStatus.result, {i: result})
+
+                if request != Request.report_status:
+                    logger.debug(f"Unknown type of request")
+                    yield Response(ResponseStatus.error, None)
+                    continue
+
+                logger.debug('')
+                if p.is_alive():
+                    response: Response = Response(ResponseStatus.waiting, None)
+                    logger.debug(f"Job returns status '{ResponseStatus.waiting.value}'")
                     yield response
-                    break
+                    continue
+                logger.debug('')
+                result = None if queue.empty() else queue.get()
+                logger.debug(f'{self.__id}: Result {result} is taken from the queue')
+                response: Response = Response(ResponseStatus.result, {i: result})
+                yield response
+                break
 
         response = Response(ResponseStatus.finish, None)
         yield response
