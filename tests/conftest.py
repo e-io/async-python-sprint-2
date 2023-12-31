@@ -8,6 +8,3 @@ def fixtures_for_all_tests():
 
 def actions_before_all_tests():
     pass
-
-
-

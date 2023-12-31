@@ -43,7 +43,7 @@ class Scheduler:
     def run(self) -> None:
         """Do jobs. This is the main loop of the whole class."""
         while True:
-            logger.debug("the begin of main 'while' cycle")
+            logger.debug("The begin of main 'while' cycle")
             sleep(self.__tick)
             space = self.__pool_size - len(self.__pool)  # must be >=0
 

@@ -52,14 +52,14 @@ class Job:
             Job.all_id[name] += 1
         else:
             Job.all_id[name] = 1
-        logger.debug(Job.all_id)
+        logger.debug(f"all_id dictionary: {Job.all_id}")
 
         siblings = Job.all_id[name]  # other jobs which have the same basic name
         zero = '0' if siblings < 10 else ''
         self.__id = name + '_' + zero + str(siblings)
 
     def get_id(self) -> str:
-        """Return identifier of a Job"""
+        """Return identifier of a Job."""
         return self.__id
 
     @staticmethod
@@ -75,7 +75,7 @@ class Job:
 
     def start_loop(self) -> Generator[Response | None, Request, None]:
         """
-        Return main coroutine of the whole class
+        Return main coroutine of the whole class.
 
         target is functools.partial(func, arg1, arg2 ...)
         :return: coroutine
