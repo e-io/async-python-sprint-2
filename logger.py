@@ -2,7 +2,7 @@ import logging
 
 
 def get_custom_logger():
-    """Default logger for all files in this project"""
+    """Return default logger for all files in this project."""
 
     formatter = logging.Formatter('%(levelname)s-%(filename)s-%(funcName)s-%(lineno)d:\t%(message)s')
 

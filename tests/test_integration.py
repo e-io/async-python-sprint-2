@@ -1,3 +1,7 @@
+"""
+The main file for tests.
+"""
+
 from configparser import ConfigParser
 from functools import partial
 from time import sleep
@@ -30,7 +34,7 @@ def fixture_for_power() -> Any:
     return tuples
 
 
-def test_2jobs(fixture_for_power: tuple):
+def test_3jobs(fixture_for_power: tuple):
     tuples = fixture_for_power
 
     jobs = [Job([partial(power, *args_)]) for args_ in tuples]
@@ -38,6 +42,22 @@ def test_2jobs(fixture_for_power: tuple):
 
     for job in jobs:
         scheduler.schedule(job)
+
+    scheduler.run()
+
+
+def test_3tasks_in_1job(fixture_for_power: tuple):
+    tuples = fixture_for_power
+
+    job_3tasks = Job([partial(power, *args_) for args_ in tuples])
+    scheduler = Scheduler()
+
+    scheduler.schedule(job_3tasks)
+
+    args = [i + 1 for i in tuples[0]]
+    job_1task = Job([partial(power, *args)])
+
+    scheduler.schedule(job_1task)
 
     scheduler.run()
 

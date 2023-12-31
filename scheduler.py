@@ -11,6 +11,21 @@ from customtypes import (
 
 
 class Scheduler:
+    """
+    A class used to represent a Scheduler.
+    It may contain several jobs inside.
+
+    Attributes
+    ----------
+    __pending : list[Job]
+        jobs which are waiting to be in the pool
+    __pool : list[Job]
+        jobs which are in the progress
+    __ready : list[Job]
+        jobs which are done
+    __tick : float
+        something like 'a frequency' of the whole project in seconds
+    """
     def __init__(self, pool_size: int = 10) -> None:
         self.__pool_size: int = pool_size
         self.__pending: list[Job] = []
@@ -22,9 +37,11 @@ class Scheduler:
         self.__tick = float(config['scheduler']['tick'])
 
     def schedule(self, job: Job) -> None:
+        """Add a job in the list of pending jobs."""
         self.__pending.append(job)
 
     def run(self) -> None:
+        """Do jobs. This is the main loop of the whole class."""
         while True:
             logger.debug("the begin of main 'while' cycle")
             sleep(self.__tick)
@@ -69,14 +86,17 @@ class Scheduler:
         logger.debug(f"Scheduler finished its work. "
                      f"Finished jobs: {len(self.__ready)}")
 
-    def restart(self) -> None:
-        ...
-
     def stop(self) -> None:
+        """Stop all jobs and backup there condition."""
+
+    def restart(self) -> None:
+        """Start all jobs again where they were stopped."""
         ...
 
     def __backup(self) -> None:
+        """A stub"""
         ...
 
     def __restore(self) -> None:
+        """A stub"""
         ...

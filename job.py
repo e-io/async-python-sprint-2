@@ -10,11 +10,18 @@ from logger import logger
 
 class Job:
     """
-    Job works with a list of tasks,
-    each task should be a 'functools.partial'.
+    A class used to represent a Job. It contains one or several tasks inside it.
+    Each task should be a 'functools.partial'.
     'Partial' is like a zip with a target function and arguments together.
 
-    :param all_id: identifiers and their number
+    Class attributes
+    ----------
+    all_id : dict
+        contains already used identifiers and their total number
+    __max_id_length : int
+        the max length of identifier (also 2 digits will be added like '_01').
+    __tick : float
+        something like 'a frequency' of the whole project in seconds
     """
     all_id: Dict[str, int] = {}
 
@@ -45,25 +52,31 @@ class Job:
             Job.all_id[name] += 1
         else:
             Job.all_id[name] = 1
+        logger.debug(Job.all_id)
 
         siblings = Job.all_id[name]  # other jobs which have the same basic name
         zero = '0' if siblings < 10 else ''
         self.__id = name + '_' + zero + str(siblings)
 
     def get_id(self) -> str:
+        """Return identifier of a Job"""
         return self.__id
-
-    def run(self) -> None:
-        self.loop = self.start_loop()
 
     @staticmethod
     def target_and_queue(target: Callable, queue: Queue) -> None:
+        """Wrap a function into another function and put a result in a queue."""
         result = str(target())
         queue.put(result)
         logger.debug(f'Result {result} is put in the queue')
 
+    def run(self) -> None:
+        """Start a coroutine. It's being called just one time during a life of Job object."""
+        self.loop = self.start_loop()
+
     def start_loop(self) -> Generator[Response | None, Request, None]:
         """
+        Return main coroutine of the whole class
+
         target is functools.partial(func, arg1, arg2 ...)
         :return: coroutine
         """
@@ -103,7 +116,9 @@ class Job:
         yield response
 
     def pause(self) -> None:
-        pass
+        """Pause a job."""
+        ...
 
     def stop(self) -> None:
-        pass
+        """Stop a job."""
+        ...
