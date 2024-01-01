@@ -52,6 +52,8 @@ def test_3jobs(fixture_for_power: tuple) -> None:
         scheduler.schedule(job)
 
     scheduler.run()
+    sleep(3*TICK)
+    scheduler.stop()
 
 
 def test_3tasks_in_1job(fixture_for_power: tuple):

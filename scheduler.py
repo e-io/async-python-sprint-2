@@ -1,4 +1,5 @@
 from configparser import ConfigParser
+from threading import Thread, Event
 from time import sleep
 
 from job import Job
@@ -31,6 +32,9 @@ class Scheduler:
         self.__pending: list[Job] = []
         self.__pool: list[Job] = []
         self.__ready: list[Job] = []
+        # by safeword it is meaning a signal to stop all processes and make a backup
+        self.safeword = Event()
+        self.thread = Thread(target=self.__run)  # main thread for a main loop
 
         config = ConfigParser()
         config.read('setup.cfg')
@@ -41,10 +45,25 @@ class Scheduler:
         self.__pending.append(job)
 
     def run(self) -> None:
+        self.safeword.clear()  # just for explicit behaviour
+        self.thread.start()
+        # The thread will be stopped by itself.
+        # There is no need in additional actions.
+
+    def stop(self) -> None:
+        """Stop all jobs and backup there condition."""
+        logger.debug("Event 'safeword' is set")
+        self.safeword.set()
+
+    def __run(self) -> None:
         """Do jobs. This is the main loop of the whole class."""
         while True:
-            logger.debug("The begin of main 'while' cycle")
             sleep(self.__tick)
+            logger.debug("The first line of main 'while' cycle of Scheduler.")
+            if self.safeword.is_set():
+                self.__backup()
+                exit(0)  # It's shown explicitly that the current thread finishes its work
+
             space = self.__pool_size - len(self.__pool)  # must be >=0
 
             for _ in range(space):
@@ -65,8 +84,6 @@ class Scheduler:
                 next(job.loop)
                 logger.debug(f"Sending request to {job.get_id()}")
                 response: Response = job.loop.send(Request.report_status)
-                # logger.debug(f"A call of 'next' for {job.get_id()}")
-                # next(job.loop)
                 logger.debug(f"Scheduler got response '{response.status.value}'")
 
                 if response.status is ResponseStatus.waiting:
@@ -86,16 +103,14 @@ class Scheduler:
         logger.debug(f"Scheduler finished its work. "
                      f"Finished jobs: {len(self.__ready)}")
 
-    def stop(self) -> None:
-        """Stop all jobs and backup there condition."""
-
     def restart(self) -> None:
         """Start all jobs again where they were stopped."""
         ...
 
     def __backup(self) -> None:
         """A stub"""
-        ...
+        logger.debug("This is '__backup' function'")
+        sleep(self.__tick)
 
     def __restore(self) -> None:
         """A stub"""
