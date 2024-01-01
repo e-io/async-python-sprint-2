@@ -37,8 +37,11 @@ def fixture_for_power() -> Any:
 def test_3jobs(fixture_for_power: tuple) -> None:
     """
     Test "three jobs for one scheduler"
-    :param fixture_for_power: a fixture with variables for power function a**b
-    :return: None
+
+    Parameters
+    ----------
+    fixture_for_power : fixture
+        a fixture with variables for power function a**b
     """
     tuples = fixture_for_power
 

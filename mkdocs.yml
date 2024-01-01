@@ -4,13 +4,18 @@ theme:
   name: "material"
 
 plugins:
-  - mkdocstrings
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: numpy
+  - search
 
 nav:
   - Главная: index.md
+  - Как запускать этот проект: how-to-guides.md
   - class Scheduler (Планировщик): scheduler.md
   - class Job (Задача): job.md
   - Тесты: tests.md
-  - Как запускать этот проект: how-to-guides.md
-  - Описание задания: README.md
-  - mkdocs default index page: index-mkdocs.md
+  - Дополнительно:
+    - Про документатор mkdocs: mkdocs-basics.md

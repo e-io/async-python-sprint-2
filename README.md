@@ -4,23 +4,19 @@
 
 ## Документация
 
-Ожидается что документация будет доступна здесь онлайн:
+Документация по этому проекту доступна благодаря использованию документатора MkDocs.
+ - Онлайн
 ```shell
 open https://e-io.github.io/async-python-sprint-2/
 ```
 
-Офлайн она доступна в markdown файлах в папке docs.
-
-Как сайт - в \site\index.html 
+- Офлайн:
+    - файлы markdown - в папке docs/
+    - как сайт - site/index.html 
 
 Также сайт может генерироваться вживую при помощи команды
 ```shell
 mkdocs serve  
-```
-
-Полезная статья со внешнего источника о работе документатора mkdocs:
-```shell
-open https://realpython.com/python-project-documentation-with-mkdocs/
 ```
 
 ## Описание задания

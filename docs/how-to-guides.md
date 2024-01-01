@@ -1,3 +1,5 @@
-# How-to-guide for async-python-sprint-2
+# Как работать с этим проектом
 
-This is **How-to-guide for async-python-sprint-2**
+Сюда позже может быть добавлена полезная информация о том, 
+как работать с классами scheduler и job, 
+что они скушают, а что нет.
