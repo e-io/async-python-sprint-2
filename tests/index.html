@@ -9,8 +9,10 @@
       
       
       
-        <link rel="prev" href="../tutorials/">
+        <link rel="prev" href="../job/">
       
+      
+        <link rel="next" href="../how-to-guides/">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -18,7 +20,7 @@
     
     
       
-        <title>How-To Guides - async-python-sprint-2</title>
+        <title>Тесты - async-python-sprint-2</title>
       
     
     
@@ -62,7 +64,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#how-to-guide-for-async-python-sprint-2" class="md-skip">
+        <a href="#tests.test_integration" class="md-skip">
           Skip to content
         </a>
       
@@ -98,7 +100,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              How-To Guides
+              Тесты
             
           </span>
         </div>
@@ -158,7 +160,7 @@
         
   
   <span class="md-ellipsis">
-    Index page of docs
+    Главная
   </span>
   
 
@@ -174,11 +176,31 @@
   
   
     <li class="md-nav__item">
-      <a href="../tutorials/" class="md-nav__link">
+      <a href="../scheduler/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Manual
+    class Scheduler (Планировщик)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../job/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    class Job (Задача)
   </span>
   
 
@@ -200,19 +222,132 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
-        
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Тесты
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
-    How-To Guides
+    Тесты
   </span>
   
 
       </a>
       
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#tests.test_integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      test_integration
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tests.test_integration.test_3jobs" class="md-nav__link">
+    <span class="md-ellipsis">
+      test_3jobs()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tests.conftest" class="md-nav__link">
+    <span class="md-ellipsis">
+      conftest
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../how-to-guides/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Как запускать этот проект
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../README.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Описание задания
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index-mkdocs/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    mkdocs default index page
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -234,8 +369,41 @@
   
   
   
-    
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#tests.test_integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      test_integration
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tests.test_integration.test_3jobs" class="md-nav__link">
+    <span class="md-ellipsis">
+      test_3jobs()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tests.conftest" class="md-nav__link">
+    <span class="md-ellipsis">
+      conftest
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -250,8 +418,121 @@
                   
 
 
-<h1 id="how-to-guide-for-async-python-sprint-2">How-to-guide for async-python-sprint-2</h1>
-<p>This is <strong>How-to-guide for async-python-sprint-2</strong></p>
+  <h1>Тесты</h1>
+
+<p>Страница для описания тестов</p>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="tests.test_integration"></a>
+  <div class="doc doc-contents first">
+  
+      <p>The main file for tests.</p>
+
+  
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+<h2 id="tests.test_integration.test_3jobs" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">test_3jobs</span><span class="p">(</span><span class="n">fixture_for_power</span><span class="p">)</span></code>
+
+</h2>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Test "three jobs for one scheduler"
+:param fixture_for_power: a fixture with variables for power function a**b
+:return: None</p>
+
+          <details class="quote">
+            <summary>Source code in <code>tests/test_integration.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">test_3jobs</span><span class="p">(</span><span class="n">fixture_for_power</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Test &quot;three jobs for one scheduler&quot;</span>
+<span class="sd">    :param fixture_for_power: a fixture with variables for power function a**b</span>
+<span class="sd">    :return: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">tuples</span> <span class="o">=</span> <span class="n">fixture_for_power</span>
+
+    <span class="n">jobs</span> <span class="o">=</span> <span class="p">[</span><span class="n">Job</span><span class="p">([</span><span class="n">partial</span><span class="p">(</span><span class="n">power</span><span class="p">,</span> <span class="o">*</span><span class="n">args_</span><span class="p">)])</span> <span class="k">for</span> <span class="n">args_</span> <span class="ow">in</span> <span class="n">tuples</span><span class="p">]</span>
+    <span class="n">scheduler</span> <span class="o">=</span> <span class="n">Scheduler</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">job</span> <span class="ow">in</span> <span class="n">jobs</span><span class="p">:</span>
+        <span class="n">scheduler</span><span class="o">.</span><span class="n">schedule</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+
+    <span class="n">scheduler</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+
+  </div>
+
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="tests.conftest"></a>
+  <div class="doc doc-contents first">
+
+  
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+  </div>
+
+</div>
 
 
 
