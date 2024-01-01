@@ -14,7 +14,7 @@ class Job:
     Each task should be a 'functools.partial'.
     'Partial' is like a zip with a target function and arguments together.
 
-    Class attributes
+    Attributes
     ----------
     all_id : dict
         contains already used identifiers and their total number
@@ -78,7 +78,11 @@ class Job:
         Return main coroutine of the whole class.
 
         target is functools.partial(func, arg1, arg2 ...)
-        :return: coroutine
+
+        Returns
+        -------
+        coroutine
+            a coroutine.
         """
         yield None
         for i, target in enumerate(self.__targets):

@@ -34,7 +34,15 @@ def fixture_for_power() -> Any:
     return tuples
 
 
-def test_3jobs(fixture_for_power: tuple):
+def test_3jobs(fixture_for_power: tuple) -> None:
+    """
+    Test "three jobs for one scheduler"
+
+    Parameters
+    ----------
+    fixture_for_power : fixture
+        a fixture with variables for power function a**b
+    """
     tuples = fixture_for_power
 
     jobs = [Job([partial(power, *args_)]) for args_ in tuples]
