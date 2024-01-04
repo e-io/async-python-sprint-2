@@ -1,5 +1,4 @@
 from configparser import ConfigParser
-from threading import Thread, Event, RLock
 from time import sleep
 
 from job import Job
@@ -33,48 +32,38 @@ class Scheduler:
         self.__pool: list[Job] = []
         self.__ready: list[Job] = []
 
-        self.thread = Thread(target=self.__run)  # main thread for a main loop
-        # by safeword it is meaning a signal to stop all processes and make a backup
-        self.safeword = Event()
-        self.lock = RLock()
-
-
         config = ConfigParser()
         config.read('setup.cfg')
         self.__tick = float(config['scheduler']['tick'])
 
     def schedule(self, job: Job) -> None:
         """Add a job in the list of pending jobs."""
-        with self.lock:
-            self.__pending.append(job)
+        self.__pending.append(job)
 
     def run(self) -> None:
-        self.safeword.clear()  # just for explicit behaviour
-        self.thread.start()
-        # The thread will be stopped by itself.
-        # There is no need in additional actions.
+        self.__run()
 
     def stop(self) -> None:
-        """Stop all jobs and backup there condition."""
+        """Stop all jobs and backup their condition."""
         logger.debug("Event 'safeword' is set")
-        self.safeword.set()
+        ...
+        exit(0)
 
     def __run(self) -> None:
         """Do jobs. This is the main loop of the whole class."""
         while True:
             sleep(self.__tick)
             logger.debug("The first line of main 'while' cycle of Scheduler.")
-            if self.safeword.is_set():
-                self.__backup()
-                exit(0)  # It's shown explicitly that the current thread finishes its work
+            # if event:
+            #   self.__backup()
+            #   exit(0)  # It's shown explicitly that the current thread finishes its work
 
             space = self.__pool_size - len(self.__pool)  # must be >=0
 
             for _ in range(space):
                 if not self.__pending:  # not targets anymore
                     break
-                with self.lock:
-                    job = self.__pending.pop(0)
+                job = self.__pending.pop(0)
                 job.run()
                 logger.debug(f"Initial calling of 'next' for a job with id '{job.get_id()}'")
                 next(job.loop)
