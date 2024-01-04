@@ -89,8 +89,8 @@ class Job:
             # Job do tasks one after another. Not in parallel
             queue: Queue = Queue()
             func = partial(Job.target_and_queue, target, queue)
-            p = Process(target=func)
-            p.start()
+            process = Process(target=func)
+            process.start()
 
             while True:
                 request = yield None
@@ -104,7 +104,7 @@ class Job:
                     yield response
                     continue
 
-                if p.is_alive():
+                if process.is_alive():
                     response = Response(ResponseStatus.waiting, None)
                     logger.debug(f"Job returns status '{ResponseStatus.waiting.value}'")
                     yield response

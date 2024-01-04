@@ -1,5 +1,5 @@
 from configparser import ConfigParser
-from threading import Thread, Event
+from threading import Thread, Event, RLock
 from time import sleep
 
 from job import Job
@@ -32,9 +32,12 @@ class Scheduler:
         self.__pending: list[Job] = []
         self.__pool: list[Job] = []
         self.__ready: list[Job] = []
+
+        self.thread = Thread(target=self.__run)  # main thread for a main loop
         # by safeword it is meaning a signal to stop all processes and make a backup
         self.safeword = Event()
-        self.thread = Thread(target=self.__run)  # main thread for a main loop
+        self.lock = RLock()
+
 
         config = ConfigParser()
         config.read('setup.cfg')
@@ -42,7 +45,8 @@ class Scheduler:
 
     def schedule(self, job: Job) -> None:
         """Add a job in the list of pending jobs."""
-        self.__pending.append(job)
+        with self.lock:
+            self.__pending.append(job)
 
     def run(self) -> None:
         self.safeword.clear()  # just for explicit behaviour
@@ -69,7 +73,8 @@ class Scheduler:
             for _ in range(space):
                 if not self.__pending:  # not targets anymore
                     break
-                job = self.__pending.pop(0)
+                with self.lock:
+                    job = self.__pending.pop(0)
                 job.run()
                 logger.debug(f"Initial calling of 'next' for a job with id '{job.get_id()}'")
                 next(job.loop)
