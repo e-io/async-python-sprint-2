@@ -126,3 +126,23 @@ class Job:
     def stop(self) -> None:
         """Stop a job."""
         ...
+
+    def __repr__(self, ready: bool = True) -> list[str]:
+        """return itself for writing in CSV spreadsheet.
+        Order is according to 'header' in 'scheduler'
+        """
+        # the same 'PROGRESS' status for all cases except for 'READY' status
+        status = 'READY' if ready else 'PROGRESS'
+        row = [self.__id,
+               status,
+               self.start_at if self.start_at else 'ASAP',
+               self.max_working_time,
+               self.tries,  # it should contain only tries left
+               self.dependencies,
+               'pickled stub',
+               ]
+        for i, item in enumerate(row):
+            token = str(item)
+            token.replace('\t', '    ')
+            row[i] = token if token else 'ERROR'
+        return row

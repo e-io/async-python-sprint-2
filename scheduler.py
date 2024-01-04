@@ -1,5 +1,7 @@
 from configparser import ConfigParser
+from csv import writer as Csv_writer
 from multiprocessing import Process, Queue
+from pathlib import Path
 from time import sleep
 
 from job import Job
@@ -140,10 +142,49 @@ class _Scheduler:
         ...
 
     def __backup(self) -> None:
-        """A stub"""
+        """Save the state of all "jobs" in a CSV file"""
         logger.debug("This is '__backup' function'")
-        sleep(self.__tick)
-        ...  # saving the state of all "jobs" in a CSV file
+
+        name = 'backup/backup'
+        spreadsheet_extension = '.tsv'
+        spreadsheet_extension = spreadsheet_extension.lower()
+        if spreadsheet_extension not in ('.tsv', '.csv'):
+            raise Exception('wrong extension of a spreadsheet')
+        path = Path(name)
+        if path.suffix != spreadsheet_extension:
+            path = path.with_suffix(spreadsheet_extension)
+        logger.debug(f'A backup will be saved in the file {path}')
+        if path.parent:
+            if not path.parent.exists():
+                path.parent.mkdir(parents=True, exist_ok=True)
+
+        with open(path, 'w+') as csv_:  # spreadsheet
+            delimeter = ';'
+            if spreadsheet_extension == '.tsv':
+                delimeter = '\t'
+            csv_writer = Csv_writer(csv_, delimiter=delimeter)
+            header = ['job_id',
+                      'status',
+                      'start_at',
+                      'max_working_time',
+                      'tries_left',
+                      'dependencies',
+                      'pickled',
+                      ]
+            csv_writer.writerow(header)
+
+            sleep(self.__tick)
+
+            # this is the most correct order for the correct restore later
+            for job in [*self.__pool, *self.__pending, ]:
+                row: list = job.__repr__(ready=False)
+                if row:
+                    csv_writer.writerow(row)
+            for job in self.__ready:
+                row: list = job.__repr__(ready=True)
+                if row:
+                    csv_writer.writerow(row)
+        logger.debug(f'A backup is saved here {path}')
 
     def __restore(self) -> None:
         """A stub"""
