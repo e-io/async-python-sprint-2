@@ -45,6 +45,27 @@ def test_3jobs(fixture_for_power: tuple) -> None:
     """
     tuples = fixture_for_power
 
+    jobs = [Job([partial(power, *args_), ]) for args_ in tuples]
+    scheduler = Scheduler()
+
+    for job in jobs:
+        assert isinstance(job, Job)
+        scheduler.schedule(job)
+
+    scheduler.run()
+
+
+def test_a_stop(fixture_for_power: tuple) -> None:
+    """
+    Test "three jobs for one scheduler"
+
+    Parameters
+    ----------
+    fixture_for_power : fixture
+        a fixture with variables for power function a**b
+    """
+    tuples = fixture_for_power
+
     jobs = [Job([partial(power, *args_)]) for args_ in tuples]
     scheduler = Scheduler()
 

@@ -7,6 +7,20 @@ from typing import Callable, Any, Dict, Generator
 from customtypes import Request, Response, ResponseStatus
 from logger import logger
 
+import sys
+sys.path.append(r'/Users/p/Documents/GitHub/async-python-sprint-2/job.py')
+
+
+
+def target_and_queue(target: Callable, queue: Queue) -> None:
+    """Wrap a function into another function and put a result in a queue."""
+    sys.path.append(r'/Users/p/Documents/GitHub/async-python-sprint-2/job.py')
+
+    logger.debug(f"This is message from a separate process, which is created for one task only.")
+    sleep(0.5)
+    result = str(target())
+    queue.put(result)
+    logger.debug(f'Result {result} is put in the queue')
 
 class Job:
     """
@@ -62,12 +76,7 @@ class Job:
         """Return identifier of a Job."""
         return self.__id
 
-    @staticmethod
-    def target_and_queue(target: Callable, queue: Queue) -> None:
-        """Wrap a function into another function and put a result in a queue."""
-        result = str(target())
-        queue.put(result)
-        logger.debug(f'Result {result} is put in the queue')
+
 
     def run(self) -> None:
         """Start a coroutine. It's being called just one time during a life of Job object."""
@@ -88,9 +97,10 @@ class Job:
         for i, target in enumerate(self.__targets):
             # Job do tasks one after another. Not in parallel
             queue: Queue = Queue()
-            func = partial(Job.target_and_queue, target, queue)
-            p = Process(target=func)
-            p.start()
+            sys.path.append(r'/Users/p/Documents/GitHub/async-python-sprint-2/job.py')
+
+            process = Process(target=target_and_queue, args=(target, queue))
+            process.start()
 
             while True:
                 request = yield None
@@ -104,7 +114,7 @@ class Job:
                     yield response
                     continue
 
-                if p.is_alive():
+                if process.is_alive():
                     response = Response(ResponseStatus.waiting, None)
                     logger.debug(f"Job returns status '{ResponseStatus.waiting.value}'")
                     yield response
