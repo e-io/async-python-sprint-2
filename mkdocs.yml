@@ -25,6 +25,10 @@ markdown_extensions:
       pygments_lang_class: true
   - pymdownx.superfences
 
+markdown_extensions:
+  - pymdownx.snippets:
+      base_path: ["."]
+
 nav:
   - Главная: index.md
   - Таблица с бэкапом: backup-spreadsheet.md
