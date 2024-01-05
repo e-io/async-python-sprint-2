@@ -333,6 +333,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#tests.test_integration.test_a_stop" class="md-nav__link">
+    <span class="md-ellipsis">
+      test_a_stop()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#tests.conftest" class="md-nav__link">
     <span class="md-ellipsis">
       conftest
@@ -457,6 +466,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#tests.test_integration.test_a_stop" class="md-nav__link">
+    <span class="md-ellipsis">
+      test_a_stop()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#tests.conftest" class="md-nav__link">
     <span class="md-ellipsis">
       conftest
@@ -571,7 +589,100 @@
 <span class="normal">51</span>
 <span class="normal">52</span>
 <span class="normal">53</span>
-<span class="normal">54</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">test_3jobs</span><span class="p">(</span><span class="n">fixture_for_power</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">54</span>
+<span class="normal">55</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">test_3jobs</span><span class="p">(</span><span class="n">fixture_for_power</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Test &quot;three jobs for one scheduler&quot;</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fixture_for_power : fixture</span>
+<span class="sd">        a fixture with variables for power function a**b</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">tuples</span> <span class="o">=</span> <span class="n">fixture_for_power</span>
+
+    <span class="n">jobs</span> <span class="o">=</span> <span class="p">[</span><span class="n">Job</span><span class="p">([</span><span class="n">partial</span><span class="p">(</span><span class="n">power</span><span class="p">,</span> <span class="o">*</span><span class="n">args_</span><span class="p">),</span> <span class="p">])</span> <span class="k">for</span> <span class="n">args_</span> <span class="ow">in</span> <span class="n">tuples</span><span class="p">]</span>
+    <span class="n">scheduler</span> <span class="o">=</span> <span class="n">Scheduler</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">job</span> <span class="ow">in</span> <span class="n">jobs</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">job</span><span class="p">,</span> <span class="n">Job</span><span class="p">)</span>
+        <span class="n">scheduler</span><span class="o">.</span><span class="n">schedule</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+
+    <span class="n">scheduler</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+<h2 id="tests.test_integration.test_a_stop" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">test_a_stop</span><span class="p">(</span><span class="n">fixture_for_power</span><span class="p">)</span></code>
+
+</h2>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Test "three jobs for one scheduler"</p>
+
+
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>fixture_for_power</code></td>
+          <td>
+                <code><span title="pytest.fixture">fixture</span></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>a fixture with variables for power function a**b</p>
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+          <details class="quote">
+            <summary>Source code in <code>tests/test_integration.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">test_a_stop</span><span class="p">(</span><span class="n">fixture_for_power</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Test &quot;three jobs for one scheduler&quot;</span>
 
@@ -589,6 +700,8 @@
         <span class="n">scheduler</span><span class="o">.</span><span class="n">schedule</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
 
     <span class="n">scheduler</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+    <span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="n">TICK</span><span class="p">)</span>
+    <span class="n">scheduler</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 </code></pre></div></td></tr></table></div>
           </details>
   </div>
