@@ -24,6 +24,9 @@
     
       <link rel="stylesheet" href="../assets/stylesheets/main.50c56a3b.min.css">
       
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
       
 
 
@@ -53,7 +56,12 @@
   </head>
   
   
-    <body dir="ltr">
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="cyan" data-md-color-accent="deep-purple">
   
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
@@ -105,8 +113,8 @@
       </div>
     </div>
     
+      
     
-      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
     
     
     
@@ -507,47 +515,47 @@
 <h1 id="mkdocs">О MkDocs</h1>
 <p>Эта документация построена при помощи документатора MkDocs.</p>
 <h2 id="_1">Базовые команды</h2>
-<p>Чтобы запустить документацию в браузере используя IDE или терминал</p>
-<pre><code class="language-shell">mkdocs serve
-</code></pre>
+<p>Чтобы запустить документацию в браузере используя IDE или терминал
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>mkdocs<span class="w"> </span>serve
+</code></pre></div></p>
 <p>Пересобрать статический сайт (хранится в папке site). 
-Не требует обращения к терминалу каждый раз, но требует периодической пересборки.</p>
-<pre><code class="language-shell">mkdocs build
-</code></pre>
-<p>Обновить документацию на гитхабе (требуется чтобы обновлённые файлы уже были на гитхабе хоть на какой-то ветке).</p>
-<pre><code class="language-shell">mkdocs gh-deploy
-</code></pre>
+Не требует обращения к терминалу каждый раз, но требует периодической пересборки.
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>mkdocs<span class="w"> </span>build
+</code></pre></div></p>
+<p>Обновить документацию на гитхабе (требуется чтобы обновлённые файлы уже были на гитхабе хоть на какой-то ветке).
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>mkdocs<span class="w"> </span>gh-deploy
+</code></pre></div></p>
 <h2 id="mkdocs_1">Задействованные файлы и папки под mkdocs</h2>
-<pre><code>mkdocs.yml    # The configuration file.
+<div class="language-text highlight"><pre><span></span><code>mkdocs.yml    # The configuration file.
 docs/
     index.md  # The documentation homepage.
     ...       # Other markdown pages, images and other files.
 site/
     ...       # Статический сайт
-</code></pre>
+</code></pre></div>
 <h2 id="mkdocs_2">Дополнительно о mkdocs</h2>
-<p>Краткая справочная информация по mkdocs</p>
-<pre><code class="language-shell">mkdocs -h
-</code></pre>
-<p>Полезная статья со внешнего источника о работе документатора mkdocs:</p>
-<pre><code class="language-shell">open https://realpython.com/python-project-documentation-with-mkdocs/
-</code></pre>
-<p>Больше информации - на официальном сайте</p>
-<pre><code class="language-shell">open https://www.mkdocs.org
-</code></pre>
+<p>Краткая справочная информация по mkdocs
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>mkdocs<span class="w"> </span>-h
+</code></pre></div></p>
+<p>Полезная статья со внешнего источника о работе документатора mkdocs:
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>open<span class="w"> </span>https://realpython.com/python-project-documentation-with-mkdocs/
+</code></pre></div></p>
+<p>Больше информации - на официальном сайте
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>open<span class="w"> </span>https://www.mkdocs.org
+</code></pre></div></p>
 <h2 id="_2">Расширения</h2>
-<p>В данном проекте используются следующие расширения</p>
-<pre><code>mkdocs
-mkdocs-material
-mkdocstrings
-mkdocstrings-python
-pymdown-extensions
-</code></pre>
-<p>Всех их можно установить при помощи команды <code>pip install ...</code></p>
-<p>Список необходимых для работы mkdocs расширений можно узнать при помощи команды</p>
-<pre><code class="language-shell">cd ..
-mkdocs get-deps
-</code></pre>
+<p>В данном проекте используются следующие расширения
+<div class="language-text highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>mkdocs
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>mkdocs-material
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>mkdocstrings
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>mkdocstrings-python
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>pymdown-extensions
+</code></pre></div>
+Всех их можно установить при помощи команды <code>pip install ...</code></p>
+<p>Список необходимых для работы mkdocs расширений можно узнать при помощи команды
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nb">cd</span><span class="w"> </span>..
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>mkdocs<span class="w"> </span>get-deps
+</code></pre></div></p>
 
 
 

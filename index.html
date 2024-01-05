@@ -24,6 +24,9 @@
     
       <link rel="stylesheet" href="assets/stylesheets/main.50c56a3b.min.css">
       
+        
+        <link rel="stylesheet" href="assets/stylesheets/palette.06af60db.min.css">
+      
       
 
 
@@ -53,7 +56,12 @@
   </head>
   
   
-    <body dir="ltr">
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="cyan" data-md-color-accent="deep-purple">
   
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
@@ -105,8 +113,8 @@
       </div>
     </div>
     
+      
     
-      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
     
     
     
@@ -507,21 +515,22 @@
 <h2 id="_2">Документация</h2>
 <p>Документация по этому проекту доступна благодаря использованию документатора MkDocs.</p>
 <ul>
-<li>Посмотреть онлайн</li>
-</ul>
-<pre><code class="language-shell">open https://e-io.github.io/async-python-sprint-2/
-</code></pre>
+<li>
+<p>Посмотреть онлайн
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>open<span class="w"> </span>https://e-io.github.io/async-python-sprint-2/
+</code></pre></div></p>
+</li>
+<li>
+<p>Посмотреть офлайн:</p>
 <ul>
-<li>Посмотреть офлайн:<ul>
 <li>файлы markdown - в папке <code>docs/</code></li>
 <li>как сайт - <code>site/index.html</code></li>
 </ul>
 </li>
 </ul>
-<p>Также сайт может генерироваться "на лету" при помощи команды</p>
-<pre><code class="language-shell">mkdocs serve  
-</code></pre>
-<p>Примечание: файл <code>docs/index.md</code> является (должен являться) символьной ссылкой (<code>symlink</code> - <code>ln -s a0 a1</code>) для файла <code>README.md</code> из главной папки. </p>
+<p>Также сайт может генерироваться "на лету" при помощи команды
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>mkdocs<span class="w"> </span>serve<span class="w">  </span>
+</code></pre></div></p>
 <h2 id="_3">Описание задания</h2>
 <p><strong>1. Описать реализацию класса <code>Scheduler</code>.</strong></p>
 <p>Условия и требования:
