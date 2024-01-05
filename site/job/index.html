@@ -314,6 +314,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#job.Job.__repr__" class="md-nav__link">
+    <span class="md-ellipsis">
+      __repr__()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#job.Job.get_id" class="md-nav__link">
     <span class="md-ellipsis">
       get_id()
@@ -507,6 +516,15 @@
   
     <nav class="md-nav" aria-label="Job">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#job.Job.__repr__" class="md-nav__link">
+    <span class="md-ellipsis">
+      __repr__()
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#job.Job.get_id" class="md-nav__link">
@@ -788,7 +806,27 @@ Each task should be a 'functools.partial'.
 <span class="normal">125</span>
 <span class="normal">126</span>
 <span class="normal">127</span>
-<span class="normal">128</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Job</span><span class="p">:</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Job</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A class used to represent a Job. It contains one or several tasks inside it.</span>
 <span class="sd">    Each task should be a &#39;functools.partial&#39;.</span>
@@ -869,8 +907,8 @@ Each task should be a 'functools.partial'.
             <span class="c1"># Job do tasks one after another. Not in parallel</span>
             <span class="n">queue</span><span class="p">:</span> <span class="n">Queue</span> <span class="o">=</span> <span class="n">Queue</span><span class="p">()</span>
             <span class="n">func</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">Job</span><span class="o">.</span><span class="n">target_and_queue</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">queue</span><span class="p">)</span>
-            <span class="n">p</span> <span class="o">=</span> <span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">func</span><span class="p">)</span>
-            <span class="n">p</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+            <span class="n">process</span> <span class="o">=</span> <span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">func</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
             <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
                 <span class="n">request</span> <span class="o">=</span> <span class="k">yield</span> <span class="kc">None</span>
@@ -884,7 +922,7 @@ Each task should be a 'functools.partial'.
                     <span class="k">yield</span> <span class="n">response</span>
                     <span class="k">continue</span>
 
-                <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">is_alive</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">process</span><span class="o">.</span><span class="n">is_alive</span><span class="p">():</span>
                     <span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">(</span><span class="n">ResponseStatus</span><span class="o">.</span><span class="n">waiting</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Job returns status &#39;</span><span class="si">{</span><span class="n">ResponseStatus</span><span class="o">.</span><span class="n">waiting</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
                     <span class="k">yield</span> <span class="n">response</span>
@@ -906,6 +944,26 @@ Each task should be a 'functools.partial'.
     <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Stop a job.&quot;&quot;&quot;</span>
         <span class="o">...</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ready</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;return itself for writing in CSV spreadsheet.</span>
+<span class="sd">        Order is according to &#39;header&#39; in &#39;scheduler&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># the same &#39;PROGRESS&#39; status for all cases except for &#39;READY&#39; status</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;READY&#39;</span> <span class="k">if</span> <span class="n">ready</span> <span class="k">else</span> <span class="s1">&#39;PROGRESS&#39;</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__id</span><span class="p">,</span>
+               <span class="n">status</span><span class="p">,</span>
+               <span class="bp">self</span><span class="o">.</span><span class="n">start_at</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_at</span> <span class="k">else</span> <span class="s1">&#39;ASAP&#39;</span><span class="p">,</span>
+               <span class="bp">self</span><span class="o">.</span><span class="n">max_working_time</span><span class="p">,</span>
+               <span class="bp">self</span><span class="o">.</span><span class="n">tries</span><span class="p">,</span>  <span class="c1"># it should contain only tries left</span>
+               <span class="bp">self</span><span class="o">.</span><span class="n">dependencies</span><span class="p">,</span>
+               <span class="s1">&#39;pickled stub&#39;</span><span class="p">,</span>
+               <span class="p">]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+            <span class="n">token</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+            <span class="n">token</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;    &#39;</span><span class="p">)</span>
+            <span class="n">row</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">token</span> <span class="k">if</span> <span class="n">token</span> <span class="k">else</span> <span class="s1">&#39;ERROR&#39;</span>
+        <span class="k">return</span> <span class="n">row</span>
 </code></pre></div></td></tr></table></div>
             </details>
 
@@ -920,6 +978,68 @@ Each task should be a 'functools.partial'.
 
 
 
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+<h3 id="job.Job.__repr__" class="doc doc-heading">
+          <code class="highlight language-python"><span class="fm">__repr__</span><span class="p">(</span><span class="n">ready</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>return itself for writing in CSV spreadsheet.
+Order is according to 'header' in 'scheduler'</p>
+
+          <details class="quote">
+            <summary>Source code in <code>job.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ready</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;return itself for writing in CSV spreadsheet.</span>
+<span class="sd">    Order is according to &#39;header&#39; in &#39;scheduler&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># the same &#39;PROGRESS&#39; status for all cases except for &#39;READY&#39; status</span>
+    <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;READY&#39;</span> <span class="k">if</span> <span class="n">ready</span> <span class="k">else</span> <span class="s1">&#39;PROGRESS&#39;</span>
+    <span class="n">row</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__id</span><span class="p">,</span>
+           <span class="n">status</span><span class="p">,</span>
+           <span class="bp">self</span><span class="o">.</span><span class="n">start_at</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_at</span> <span class="k">else</span> <span class="s1">&#39;ASAP&#39;</span><span class="p">,</span>
+           <span class="bp">self</span><span class="o">.</span><span class="n">max_working_time</span><span class="p">,</span>
+           <span class="bp">self</span><span class="o">.</span><span class="n">tries</span><span class="p">,</span>  <span class="c1"># it should contain only tries left</span>
+           <span class="bp">self</span><span class="o">.</span><span class="n">dependencies</span><span class="p">,</span>
+           <span class="s1">&#39;pickled stub&#39;</span><span class="p">,</span>
+           <span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+        <span class="n">token</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+        <span class="n">token</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;    &#39;</span><span class="p">)</span>
+        <span class="n">row</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">token</span> <span class="k">if</span> <span class="n">token</span> <span class="k">else</span> <span class="s1">&#39;ERROR&#39;</span>
+    <span class="k">return</span> <span class="n">row</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
 
 
 <div class="doc doc-object doc-function">
@@ -1111,8 +1231,8 @@ Each task should be a 'functools.partial'.
         <span class="c1"># Job do tasks one after another. Not in parallel</span>
         <span class="n">queue</span><span class="p">:</span> <span class="n">Queue</span> <span class="o">=</span> <span class="n">Queue</span><span class="p">()</span>
         <span class="n">func</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">Job</span><span class="o">.</span><span class="n">target_and_queue</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">queue</span><span class="p">)</span>
-        <span class="n">p</span> <span class="o">=</span> <span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">func</span><span class="p">)</span>
-        <span class="n">p</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="n">process</span> <span class="o">=</span> <span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">func</span><span class="p">)</span>
+        <span class="n">process</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">request</span> <span class="o">=</span> <span class="k">yield</span> <span class="kc">None</span>
@@ -1126,7 +1246,7 @@ Each task should be a 'functools.partial'.
                 <span class="k">yield</span> <span class="n">response</span>
                 <span class="k">continue</span>
 
-            <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">is_alive</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">process</span><span class="o">.</span><span class="n">is_alive</span><span class="p">():</span>
                 <span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">(</span><span class="n">ResponseStatus</span><span class="o">.</span><span class="n">waiting</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Job returns status &#39;</span><span class="si">{</span><span class="n">ResponseStatus</span><span class="o">.</span><span class="n">waiting</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
                 <span class="k">yield</span> <span class="n">response</span>

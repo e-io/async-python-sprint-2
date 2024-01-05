@@ -11,6 +11,10 @@ plugins:
             docstring_style: numpy
   - search
 
+markdown_extensions:
+  - pymdownx.snippets:
+      base_path: ["."]
+
 nav:
   - Главная: index.md
   - Как запускать этот проект: how-to-guides.md
