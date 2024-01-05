@@ -1,1 +1,1 @@
-/Users/p/Documents/GitHub/async-python-sprint-2/README.md
+---8<--- "README.md"

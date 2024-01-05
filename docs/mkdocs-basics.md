@@ -1,6 +1,6 @@
 # О MkDocs
 
-Эта документация построена при помощи документатора 
+Эта документация построена при помощи документатора MkDocs.
 
 ## Базовые команды
 
@@ -43,4 +43,22 @@ open https://realpython.com/python-project-documentation-with-mkdocs/
 Больше информации - на официальном сайте
 ```shell
 open https://www.mkdocs.org
+```
+
+## Расширения
+
+В данном проекте используются следующие расширения
+```
+mkdocs
+mkdocs-material
+mkdocstrings
+mkdocstrings-python
+pymdown-extensions
+```
+Всех их можно установить при помощи команды ``pip install ...``
+
+Список необходимых для работы mkdocs расширений можно узнать при помощи команды
+```shell
+cd ..
+mkdocs get-deps
 ```

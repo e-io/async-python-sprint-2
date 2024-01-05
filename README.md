@@ -20,8 +20,6 @@ open https://e-io.github.io/async-python-sprint-2/
 mkdocs serve  
 ```
 
-Примечание: файл `docs/index.md` является (должен являться) символьной ссылкой (`symlink` - `ln -s a0 a1`) для файла `README.md` из главной папки. 
-
 ## Описание задания
 
 **1. Описать реализацию класса `Scheduler`.**
