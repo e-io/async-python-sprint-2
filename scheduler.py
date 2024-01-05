@@ -1,5 +1,6 @@
 from configparser import ConfigParser
 from csv import writer as Csv_writer
+from json import dumps
 from multiprocessing import Process, Queue
 from pathlib import Path
 from time import sleep
@@ -21,8 +22,9 @@ class Scheduler:
         config = ConfigParser()
         config.read('setup.cfg')
         self.__tick = float(config['scheduler']['tick'])
+        backup_path = str(config['scheduler']['backup'])
 
-        self.scheduler = _Scheduler(pool_size=pool_size, tick=self.__tick)
+        self.scheduler = _Scheduler(pool_size=pool_size, tick=self.__tick, backup=backup_path)
         self.process = None
         self.queue = None
 
@@ -43,6 +45,13 @@ class Scheduler:
         logger.debug("Scheduler.stop is called")
         self.queue.put('stop')
 
+    def restart(self) -> None:
+        scheduler = self.scheduler
+        self.queue = Queue()
+        queue = self.queue
+        self.process = Process(target=scheduler.restart, args=(queue,))
+        self.process.start()
+
 
 class _Scheduler:
     """
@@ -60,12 +69,13 @@ class _Scheduler:
     __tick : float
         something like 'a frequency' of the whole project in seconds
     """
-    def __init__(self, pool_size: int, tick: float) -> None:
+    def __init__(self, pool_size: int, tick: float, backup: str) -> None:
         self.__pool_size: int = pool_size
         self.__pending: list[Job] = []
         self.__pool: list[Job] = []
         self.__ready: list[Job] = []
         self.__tick: float = tick
+        self.backup: Path = Path(backup)
         self.queue = None
 
     def schedule(self, job: Job) -> None:
@@ -75,12 +85,6 @@ class _Scheduler:
     def run(self, queue: Queue) -> None:
         self.queue = queue
         self.__run()
-
-    def stop(self) -> None:
-        """Stop all jobs and backup their condition."""
-        logger.debug("This is _Scheduler.stop()")
-        self.__backup()
-        exit(0)
 
     def __run(self) -> None:
         """Do jobs. This is the main loop of the whole class."""
@@ -137,19 +141,19 @@ class _Scheduler:
         logger.debug(f"Scheduler finished its work. "
                      f"Finished jobs: {len(self.__ready)}")
 
-    def restart(self) -> None:
-        """Start all jobs again where they were stopped."""
-        ...
+    def stop(self) -> None:
+        """Stop all jobs and backup their condition."""
+        logger.debug("This is _Scheduler.stop()")
+        self.__backup()
+        exit(0)
 
     def __backup(self) -> None:
         """Save the state of all "jobs" in a CSV file"""
-        logger.debug("This is '__backup' function'")
+        logger.debug("This is '__backup' method'")
 
         name = 'backup/backup'
         spreadsheet_extension = '.tsv'
-        spreadsheet_extension = spreadsheet_extension.lower()
-        if spreadsheet_extension not in ('.tsv', '.csv'):
-            raise Exception('wrong extension of a spreadsheet')
+
         path = Path(name)
         if path.suffix != spreadsheet_extension:
             path = path.with_suffix(spreadsheet_extension)
@@ -159,9 +163,7 @@ class _Scheduler:
                 path.parent.mkdir(parents=True, exist_ok=True)
 
         with open(path, 'w+') as csv_:  # spreadsheet
-            delimeter = ';'
-            if spreadsheet_extension == '.tsv':
-                delimeter = '\t'
+            delimeter = '\t'
             csv_writer = Csv_writer(csv_, delimiter=delimeter)
             header = ['job_id',
                       'status',
@@ -184,8 +186,32 @@ class _Scheduler:
                 row: list = job.__repr__(ready=True)
                 if row:
                     csv_writer.writerow(row)
-        logger.debug(f'A backup is saved here {path}')
+        logger.debug(f'A backup is saved here: {path}')
+
+        path = path.with_suffix('.json')
+        with open(path, 'w+') as json_:
+            data = {
+                'pool_size': self.__pool_size,
+            }
+            json_.write(dumps(data))
+        logger.debug(f'Additional backup json file is saved here: {path}')
+        sleep(10*self.__tick)  # just wait for while
+        self.__clear()
+
+    def __clear(self) -> None:
+        """Just prevent usage of _Scheduler object if it was stopped"""
+        self.__pool = None
+        self.__pending = None
+        self.__ready = None
+        self.__pool_size = 0
+
+    def restart(self, queue: Queue) -> None:
+        """Start all jobs again where they were stopped."""
+        logger.debug("This is a call of restart method")
+        self.queue = queue
+        self.__restore()
+        #self.__run()
 
     def __restore(self) -> None:
-        """A stub"""
-        ...
+        """Restore all jobs using backup file."""
+        logger.debug("This is a call of __restore method")
