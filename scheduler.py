@@ -1,5 +1,9 @@
 from configparser import ConfigParser
-from csv import writer as Csv_writer
+from csv import (
+    writer as Csv_writer,
+    DictReader
+)
+from functools import partial
 from json import dumps
 from multiprocessing import Process, Queue
 from pathlib import Path
@@ -75,7 +79,7 @@ class _Scheduler:
         self.__pool: list[Job] = []
         self.__ready: list[Job] = []
         self.__tick: float = tick
-        self.backup: Path = Path(backup)
+        self.backup_path: Path = Path(backup)
         self.queue = None
 
     def schedule(self, job: Job) -> None:
@@ -151,10 +155,9 @@ class _Scheduler:
         """Save the state of all "jobs" in a CSV file"""
         logger.debug("This is '__backup' method'")
 
-        name = 'backup/backup'
         spreadsheet_extension = '.tsv'
 
-        path = Path(name)
+        path = self.backup_path
         if path.suffix != spreadsheet_extension:
             path = path.with_suffix(spreadsheet_extension)
         logger.debug(f'A backup will be saved in the file {path}')
@@ -210,8 +213,36 @@ class _Scheduler:
         logger.debug("This is a call of restart method")
         self.queue = queue
         self.__restore()
-        #self.__run()
+        self.__run()
 
     def __restore(self) -> None:
         """Restore all jobs using backup file."""
         logger.debug("This is a call of __restore method")
+        path = self.backup_path
+
+        # to read json
+        # path = path.with_suffix('.json')
+
+        path = path.with_suffix('.tsv')
+        if not path.exists():
+            raise Exception('Backup does not exist. So, it is impossible to restore.')
+        with open(path, 'r') as tsv:
+            dict_reader = DictReader(tsv, delimiter='\t')
+
+            for row in dict_reader:
+                func = row['pickled']
+                func = partial(divmod, 10, 2)  # example
+                raw_dependencies = row['dependencies'][1:-1]  # everything except () or []
+                if raw_dependencies:
+                    dependencies=tuple(term for term in raw_dependencies.split(', '))
+                else:
+                    dependencies = tuple()
+
+                job = Job(targets=[func,],
+                          start_at=row['start_at'],
+                          max_working_time=row['max_working_time'],
+                          tries=row['tries_left'],
+                          dependencies=dependencies,
+                          )
+                self.schedule(job)
+        logger.debug(f"Scheduler is restored. It contains {len(self.__pending)} jobs.")

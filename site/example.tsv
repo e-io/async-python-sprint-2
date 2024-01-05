@@ -1,0 +1,4 @@
+job_id	status	start_at	max_working_time	tries_left	dependencies	pickled
+power_01	PROGRESS	ASAP	-1	0	()	pickled stub
+power_02	PROGRESS	ASAP	-1	0	()	pickled stub
+power_03	PROGRESS	ASAP	-1	0	()	pickled stub
