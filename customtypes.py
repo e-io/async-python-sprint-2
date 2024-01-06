@@ -3,7 +3,6 @@ from dataclasses import dataclass, field
 
 from typing import Any
 
-
 class Request(Enum):
     """A class used to represent signals from class Scheduler to class Job."""
     report_status = 'Report status'
@@ -31,3 +30,5 @@ class Response:
     """
     status: ResponseStatus
     new_results: None | dict[int, Any] = field(default_factory=lambda: {})
+
+EXCEPTION = '!Exception'  # a prefix of a string with exception for a queue between target() and Job

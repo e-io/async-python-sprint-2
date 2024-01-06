@@ -134,6 +134,9 @@ class _Scheduler:
                 if response.status is ResponseStatus.result:
                     logger.debug(f"Scheduler got result  '{response.new_results}' from {job.get_id()}")
                     continue
+                if response.status is ResponseStatus.error:
+                    logger.debug(f"Scheduler was informed about an exception '{response.new_results}' from {job.get_id()}")
+                    continue
                 if response.status is ResponseStatus.finish:
                     finished.append(i)
 

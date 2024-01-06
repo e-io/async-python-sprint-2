@@ -5,7 +5,7 @@ from pickle import dumps
 from time import sleep
 from typing import Callable, Any, Dict, Generator
 
-from customtypes import Request, Response, ResponseStatus
+from customtypes import Request, Response, ResponseStatus, EXCEPTION
 from logger import logger
 
 
@@ -71,9 +71,14 @@ class Job:
     @staticmethod
     def target_and_queue(target: Callable, queue: Queue) -> None:
         """Wrap a function into another function and put a result in a queue."""
-        result = str(target())
-        queue.put(result)
-        logger.debug(f'Result {result} is put in the queue')
+        try:
+            result = str(target())
+        except Exception as e:
+            logger.debug(f'Exception is caught {e}')
+            queue.put(EXCEPTION + str(e))
+        else:
+            queue.put(result)
+            logger.debug(f'Result {result} is put in the queue')
 
     def run(self) -> None:
         """Start a coroutine. It's being called just one time during a life of Job object."""
@@ -117,8 +122,13 @@ class Job:
                     continue
 
                 result = None if queue.empty() else queue.get()
-                logger.debug(f'{self.__id}: Result {result} is taken from the queue')
-                response = Response(ResponseStatus.result, {i: result})
+                if result and result.startswith(EXCEPTION):
+                    result = result[len(EXCEPTION):]
+                    logger.debug(f'Exception {result} is taken from the queue')
+                    response = Response(ResponseStatus.error, {i: result})
+                else:
+                    logger.debug(f'{self.__id}: Result {result} is taken from the queue')
+                    response = Response(ResponseStatus.result, {i: result})
                 yield response
                 break
         yield None

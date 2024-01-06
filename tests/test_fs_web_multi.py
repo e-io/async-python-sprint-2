@@ -46,6 +46,9 @@ def cities_fixture():
         "SPETERSBURG",
         "BEIJING",
         "ABUDHABI",
+        "GIZA",
+        "MADRID",
+        "TORONTO",
     )
     return tuple_
 
@@ -63,8 +66,9 @@ def job_request_weather(city):  # web_job
         if 'forecasts' not in response:
             raise Exception("Response does not have the forecast data")
     except Exception as e:
-        logger.warning(f"city {city} is skipped because of exception: {e}")
-        exit()
+        warning = f"city {city} is skipped because of exception: {e}"
+        logger.warning(warning)
+        raise Exception(warning)
     else:
         if not TMP.exists():
             TMP.mkdir(parents=True)
