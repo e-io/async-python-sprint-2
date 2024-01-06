@@ -230,6 +230,8 @@ class _Scheduler:
 
         path = path.with_suffix('.json')
         if not path.exists():
+            # logger.debug(path)
+            # logger.debug(Path('.').resolve())
             raise Exception('Backup (.json) does not exist. So, it is impossible to restore Scheduler.')
         with open(path, 'r') as json_:
             dict_ = json.load(json_)

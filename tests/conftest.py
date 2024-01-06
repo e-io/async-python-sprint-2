@@ -1,11 +1,16 @@
-from shutil import rmtree
+import pytest
+from configparser import ConfigParser
 from pathlib import Path
 from pytest import fixture
+from shutil import rmtree
 
 
-@fixture()
-def fixtures_for_all_tests():
-    pass
+def pytest_configure():  # does not work
+    config = ConfigParser()
+    config.read('setup.cfg')
+
+    pytest.TICK = float(config['scheduler']['tick'])
+    pytest.TMP = Path(config['tests']['tmp_folder'])
 
 
 @fixture
@@ -22,3 +27,7 @@ def test_actions_before_all_tests():
     backup = Path('backup')
     if backup.exists():
         rmtree(backup)
+
+@fixture()
+def fixtures_for_all_tests():
+    pass

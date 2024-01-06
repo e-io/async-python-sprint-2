@@ -1,7 +1,16 @@
 Страница для описания тестов
 
-:::tests.test_fs_web_multi
+## **test_fs**
+:::tests.test_fs
 
+## **test_web**
+:::tests.test_web
+
+## **test_multi**
+:::tests.test_multi
+
+## **test_integration**
 :::tests.test_integration
 
+## **conftest**
 :::tests.conftest

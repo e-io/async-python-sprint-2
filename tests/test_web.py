@@ -1,4 +1,7 @@
-"""The file is for tests, required by the initial statement of work (SoW)"""
+"""The file is for tests, required by the initial statement of work (SoW)
+
+  - работа с сетью: обработка ссылок (GET-запросы) и анализ полученного результата;
+"""
 
 from configparser import ConfigParser
 from functools import partial
@@ -16,8 +19,10 @@ config = ConfigParser()
 config.read('setup.cfg')
 TICK = float(config['scheduler']['tick'])
 TMP = Path(config['tests']['tmp_folder'])
-
-
+"""
+TMP = pytest.TMP
+TICK = pytest.TICK
+"""
 CITIES = {
     "SPETERSBURG": "https://code.s3.yandex.net/async-module/spetersburg-response.json",
     "BEIJING": "https://code.s3.yandex.net/async-module/beijing-response.json",
@@ -102,10 +107,3 @@ def test_web_job(cities_fixture):
     scheduler.run()
     scheduler.join()
 
-
-def test_fs_job():
-    ...
-
-
-def test_multi_job():
-    ...
