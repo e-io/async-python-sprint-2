@@ -4,8 +4,8 @@ from csv import (
     writer as Csv_writer,
     DictReader
 )
-from functools import partial
-from json import dumps
+import json
+import pickle
 from multiprocessing import Process, Queue
 from pathlib import Path
 from time import sleep
@@ -197,7 +197,7 @@ class _Scheduler:
             data = {
                 'pool_size': self.__pool_size,
             }
-            json_.write(dumps(data))
+            json_.write(json.dumps(data))
         logger.debug(f'Additional backup json file is saved here: {path}')
         sleep(10*self.__tick)  # just wait for while
         self.__clear()
@@ -222,12 +222,16 @@ class _Scheduler:
         logger.debug("This is a call of __restore method")
         path = self.backup_path
 
-        # to read json
-        # path = path.with_suffix('.json')
+        path = path.with_suffix('.json')
+        if not path.exists():
+            raise Exception('Backup (.json) does not exist. So, it is impossible to restore Scheduler.')
+        with open(path, 'r') as json_:
+            dict_ = json.load(json_)
+            self.__pool_size = dict_["pool_size"]
 
         path = path.with_suffix('.tsv')
         if not path.exists():
-            raise Exception('Backup does not exist. So, it is impossible to restore.')
+            raise Exception('Backup does not exist. So, it is impossible to restore jobs.')
         with open(path, 'r') as tsv:
             dict_reader = DictReader(tsv, delimiter='\t')
 
@@ -235,8 +239,7 @@ class _Scheduler:
                 if row['status'] != 'PROGRESS':
                     continue
 
-                func = row['pickled']
-                func = partial(divmod, 10, 2)  # example
+                func = pickle.loads(literal_eval(row['pickled']))
 
                 start_at = row['start_at']
                 dependencies = literal_eval(row['dependencies'])
@@ -245,13 +248,12 @@ class _Scheduler:
                     start_at = ''
                 job = Job(targets=[func,],
                           start_at=start_at,
-                          max_working_time=row['max_working_time'],
-                          tries=row['tries_left'],
+                          max_working_time=int(row['max_working_time']),
+                          tries=int(row['tries_left']),
                           dependencies=dependencies,
                           id=row['job_id'],
                           )
 
                 self.schedule(job)
-                logger.debug(f"Next job is scheduled: {job.__repr__(row['status'])}")
-                logger.debug(f"Dependencies: {job.dependencies}")
+                logger.debug(f"Next job is scheduled: {job.__repr__(row['status'])[:-1]}")
         logger.debug(f"Scheduler is restored. It contains {len(self.__pending)} jobs.")

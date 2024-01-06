@@ -1,6 +1,7 @@
 from configparser import ConfigParser
 from functools import partial
 from multiprocessing import Process, Queue
+from pickle import dumps
 from time import sleep
 from typing import Callable, Any, Dict, Generator
 
@@ -138,13 +139,15 @@ class Job:
         """
         # the same 'PROGRESS' status for all cases except for 'READY' status
         status = 'READY' if ready else 'PROGRESS'
+        func = 'pickled stub',
+        func = dumps(self.__targets[0])
         row = [self.__id,
                status,
                self.start_at if self.start_at else 'ASAP',
                self.max_working_time,
                self.tries,  # it should contain only tries left
                self.dependencies,
-               'pickled stub',
+               func,
                ]
         for i, item in enumerate(row):
             token = str(item)

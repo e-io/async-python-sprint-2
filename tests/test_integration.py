@@ -26,15 +26,6 @@ def power(a, b):
     return a
 
 
-@fixture
-def fixture_for_power() -> Any:
-    tuples = ((2, 4),
-              (3, 5),
-              (5, 4),
-              )
-    return tuples
-
-
 def test_3jobs(fixture_for_power: tuple) -> None:
     """
     Test "three jobs for one scheduler"
