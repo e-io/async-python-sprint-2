@@ -18,32 +18,45 @@ TICK = float(config['scheduler']['tick'])
 TMP = Path(config['tests']['tmp_folder'])
 
 
+CITIES = {
+    "SPETERSBURG": "https://code.s3.yandex.net/async-module/spetersburg-response.json",
+    "BEIJING": "https://code.s3.yandex.net/async-module/beijing-response.json",
+    "KAZAN": "https://code.s3.yandex.net/async-module/kazan-response.json",
+    "NOVOSIBIRSK": "https://code.s3.yandex.net/async-module/novosibirsk-response.json",
+    "ABUDHABI": "https://code.s3.yandex.net/async-module/abudhabi-response.json",
+    "BUCHAREST": "https://code.s3.yandex.net/async-module/bucharest-response.json",
+    "CAIRO": "https://code.s3.yandex.net/async-module/cairo-response.json",
+
+    "GIZA": "https://code.s3.yandex.net/async-module/giza-response.json",
+    "MADRID": "https://code.s3.yandex.net/async-module/madrid-response.json",
+    "TORONTO": "https://code.s3.yandex.net/async-module/toronto-response.json"
+}
+
+
+def get_url_by_city_name(city_name):
+    try:
+        return CITIES[city_name]
+    except KeyError:
+        raise Exception("Please check that city {} exists".format(city_name))
+
+
 @fixture
-def links():
-    CITIES = {
-        "SPETERSBURG": "https://code.s3.yandex.net/async-module/spetersburg-response.json",
-        "BEIJING": "https://code.s3.yandex.net/async-module/beijing-response.json",
-        "KAZAN": "https://code.s3.yandex.net/async-module/kazan-response.json",
-        "NOVOSIBIRSK": "https://code.s3.yandex.net/async-module/novosibirsk-response.json",
-        "ABUDHABI": "https://code.s3.yandex.net/async-module/abudhabi-response.json",
-        "BUCHAREST": "https://code.s3.yandex.net/async-module/bucharest-response.json",
-        "CAIRO": "https://code.s3.yandex.net/async-module/cairo-response.json",
-
-        "GIZA": "https://code.s3.yandex.net/async-module/giza-response.json",
-        "MADRID": "https://code.s3.yandex.net/async-module/madrid-response.json",
-        "TORONTO": "https://code.s3.yandex.net/async-module/toronto-response.json"
-    }
-    return CITIES
+def cities_fixture():
+    tuple_ = (
+        "SPETERSBURG",
+        "BEIJING",
+        "ABUDHABI",
+    )
+    return tuple_
 
 
-def job_request_weather(links):  # web_job
+def job_request_weather(city):  # web_job
     """
     This could be a fixture (a function which returns an inner function),
     but in this case we get an error
     "Can't pickle local object 'request_weather.<locals>._request_weather'"
     """
-    city = "SPETERSBURG"
-    url = links[city]
+    url = get_url_by_city_name(city)
 
     try:
         response = YandexWeatherAPI.get_forecasting(url)
@@ -65,12 +78,24 @@ def job_request_weather(links):  # web_job
         return(result)
 
 
-def test_web_job1(links):
+def test_web_job1():
     job = Job(
-        [partial(job_request_weather, links)],
+        [partial(job_request_weather, "SPETERSBURG")],
     )
     scheduler = Scheduler(pool_size=6)
     scheduler.schedule(job)
+    scheduler.run()
+    scheduler.process.join()
+
+
+def test_web_job(cities_fixture):
+    cities = cities_fixture
+    scheduler = Scheduler(pool_size=6)
+    for city in cities:
+        job = Job(
+            [partial(job_request_weather, city)],
+        )
+        scheduler.schedule(job)
     scheduler.run()
     scheduler.process.join()
 
