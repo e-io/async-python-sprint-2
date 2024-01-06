@@ -3,6 +3,7 @@ The main file for tests.
 """
 
 from configparser import ConfigParser
+from datetime import datetime, timedelta
 from functools import partial
 from time import sleep
 from typing import Any
@@ -66,11 +67,29 @@ def test_a_stop(fixture_for_power: tuple) -> None:
     """
     tuples = fixture_for_power
 
-    jobs = [Job([partial(power, *args_)]) for args_ in tuples]
+    job1 = Job([partial(power, *tuples[0])])
     scheduler = Scheduler()
+    scheduler.schedule(job1)
 
-    for job in jobs:
-        scheduler.schedule(job)
+    id1 = job1.get_id()
+    job2 = Job(
+        targets=[partial(power, *tuples[1])],
+        start_at=str(datetime.now() + timedelta(seconds=8)),
+        max_working_time=16,
+        tries=6,
+        dependencies=(id1,)
+    )
+    scheduler.schedule(job2)
+
+    id2 = job2.get_id()
+    job3 = Job(
+        targets=[partial(power, *tuples[2])],
+        start_at=str(datetime.now() + timedelta(seconds=16)),
+        max_working_time=8,
+        tries=3,
+        dependencies=(id1, id2)
+    )
+    scheduler.schedule(job3)
 
     scheduler.run()
     sleep(3*TICK)

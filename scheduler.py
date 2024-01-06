@@ -1,3 +1,4 @@
+from ast import literal_eval
 from configparser import ConfigParser
 from csv import (
     writer as Csv_writer,
@@ -203,10 +204,11 @@ class _Scheduler:
 
     def __clear(self) -> None:
         """Just prevent usage of _Scheduler object if it was stopped"""
-        self.__pool = None
-        self.__pending = None
-        self.__ready = None
-        self.__pool_size = 0
+        del self.__pool
+        del self.__pending
+        del self.__ready
+        del self.__pool_size
+        del Job.all_id
 
     def restart(self, queue: Queue) -> None:
         """Start all jobs again where they were stopped."""
@@ -230,19 +232,26 @@ class _Scheduler:
             dict_reader = DictReader(tsv, delimiter='\t')
 
             for row in dict_reader:
+                if row['status'] != 'PROGRESS':
+                    continue
+
                 func = row['pickled']
                 func = partial(divmod, 10, 2)  # example
-                raw_dependencies = row['dependencies'][1:-1]  # everything except () or []
-                if raw_dependencies:
-                    dependencies=tuple(term for term in raw_dependencies.split(', '))
-                else:
-                    dependencies = tuple()
 
+                start_at = row['start_at']
+                dependencies = literal_eval(row['dependencies'])
+
+                if start_at == 'ASAP':
+                    start_at = ''
                 job = Job(targets=[func,],
-                          start_at=row['start_at'],
+                          start_at=start_at,
                           max_working_time=row['max_working_time'],
                           tries=row['tries_left'],
                           dependencies=dependencies,
+                          id=row['job_id'],
                           )
+
                 self.schedule(job)
+                logger.debug(f"Next job is scheduled: {job.__repr__(row['status'])}")
+                logger.debug(f"Dependencies: {job.dependencies}")
         logger.debug(f"Scheduler is restored. It contains {len(self.__pending)} jobs.")

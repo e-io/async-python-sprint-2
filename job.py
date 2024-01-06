@@ -33,14 +33,19 @@ class Job:
     def __init__(self, targets: list[partial],
                  start_at: str = "",
                  max_working_time: int = -1,
-                 tries: int = 0,
-                 dependencies: tuple[str, ...] = tuple()):
+                 tries: int = 1,
+                 dependencies: tuple[str, ...] = tuple(),
+                 id: str = None):  # id should be set externally just in case of restoring from backup
         self.__targets = targets
         self.start_at = start_at
         self.max_working_time = max_working_time
         self.tries = tries
         self.dependencies = dependencies
         self.loop: Any = None  # main coroutine of this class
+
+        if id:   # id should be set from outside just in case of restoring from backup
+            self.__id = id
+            return
 
         name = ''
         for target in targets:
