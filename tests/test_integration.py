@@ -1,6 +1,4 @@
-"""
-The main file for tests.
-"""
+"""This file is for testing during development process"""
 
 from configparser import ConfigParser
 from datetime import datetime, timedelta
@@ -106,15 +104,3 @@ def test_3tasks_in_1job(fixture_for_power: tuple):
     scheduler.schedule(job_1task)
 
     scheduler.run()
-
-
-def web_job():
-    ...
-
-
-def fs_job():
-    ...
-
-
-def multi_job():
-    ...
