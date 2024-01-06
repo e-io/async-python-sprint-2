@@ -44,7 +44,10 @@ class Scheduler:
         self.process = Process(target=scheduler.run, args=(queue,))
         self.process.start()
         # sleep(10 * self.__tick)
-        # self.process.join()
+        # self.join()
+
+    def join(self) -> None:
+        self.process.join()
 
     def stop(self) -> None:
         logger.debug("Scheduler.stop is called")

@@ -6,14 +6,12 @@
 
 Документация по этому проекту доступна благодаря использованию документатора MkDocs.
 
- - Посмотреть онлайн
-```shell
-open https://e-io.github.io/async-python-sprint-2/
-```
+ - Посмотреть документацию к этому проекту по второму спринту онлайн [e-io.github.io/async-python-sprint-2](https://e-io.github.io/async-python-sprint-2/)
 
 - Посмотреть офлайн:
-    - файлы markdown - в папке `docs/`
-    - как сайт - `site/index.html`
+    - как сайт - откройте `site/index.html`
+    - как отдельные файлы markdown - смотрите папку `docs/`
+    
 
 Также сайт может генерироваться "на лету" при помощи команды
 ```shell

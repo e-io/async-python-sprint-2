@@ -43,6 +43,7 @@ def test_3jobs(fixture_for_power: tuple) -> None:
         scheduler.schedule(job)
 
     scheduler.run()
+    scheduler.join()
 
 
 def test_a_stop(fixture_for_power: tuple) -> None:
@@ -88,7 +89,8 @@ def test_a_stop(fixture_for_power: tuple) -> None:
     scheduler_new = Scheduler()
     scheduler_new.restart()
     sleep(TICK)
-    scheduler_new.process.join()
+    scheduler_new.join()
+
 
 def test_3tasks_in_1job(fixture_for_power: tuple):
     tuples = fixture_for_power

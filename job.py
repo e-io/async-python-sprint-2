@@ -74,7 +74,7 @@ class Job:
         try:
             result = str(target())
         except Exception as e:
-            logger.debug(f'Exception is caught {e}')
+            logger.warning(f'Exception is caught {e}')
             queue.put(EXCEPTION + str(e))
         else:
             queue.put(result)

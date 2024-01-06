@@ -26,8 +26,8 @@ markdown_extensions:
 
 nav:
   - Главная: index.md
-  - Таблица с бэкапом: backup-spreadsheet.md
   - Как запускать этот проект: how-to-guides.md
+  - Пример бэкапа: backup-spreadsheet.md
   - class Scheduler (Планировщик): scheduler.md
   - class Job (Задача): job.md
   - Тесты: tests.md

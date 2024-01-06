@@ -67,7 +67,6 @@ def job_request_weather(city):  # web_job
             raise Exception("Response does not have the forecast data")
     except Exception as e:
         warning = f"city {city} is skipped because of exception: {e}"
-        logger.warning(warning)
         raise Exception(warning)
     else:
         if not TMP.exists():
@@ -89,7 +88,7 @@ def test_web_job1():
     scheduler = Scheduler(pool_size=6)
     scheduler.schedule(job)
     scheduler.run()
-    scheduler.process.join()
+    scheduler.join()
 
 
 def test_web_job(cities_fixture):
@@ -101,7 +100,7 @@ def test_web_job(cities_fixture):
         )
         scheduler.schedule(job)
     scheduler.run()
-    scheduler.process.join()
+    scheduler.join()
 
 
 def test_fs_job():

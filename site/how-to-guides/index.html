@@ -9,10 +9,10 @@
       
       
       
-        <link rel="prev" href="../backup-spreadsheet/">
+        <link rel="prev" href="..">
       
       
-        <link rel="next" href="../scheduler/">
+        <link rel="next" href="../backup-spreadsheet/">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -218,26 +218,6 @@
       
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../backup-spreadsheet/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Таблица с бэкапом
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
     
   
   
@@ -250,6 +230,17 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Как запускать этот проект
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -260,6 +251,105 @@
 
       </a>
       
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      requirements
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Встроенные тесты
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Ваши функции
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ваши функции">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#job" class="md-nav__link">
+    <span class="md-ellipsis">
+      Создание Job
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      Создание и запуск планировщика
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      Остановка и перезапуск планировщика
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backup-spreadsheet/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Пример бэкапа
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -409,6 +499,74 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      requirements
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Встроенные тесты
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Ваши функции
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ваши функции">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#job" class="md-nav__link">
+    <span class="md-ellipsis">
+      Создание Job
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      Создание и запуск планировщика
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      Остановка и перезапуск планировщика
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -423,9 +581,52 @@
 
 
 <h1 id="_1">Как работать с этим проектом</h1>
-<p>Сюда позже может быть добавлена полезная информация о том, 
-как работать с классами scheduler и job, 
-что они скушают, а что нет.</p>
+<h2 id="requirements">requirements</h2>
+<p>Единственная сторонняя библиотека, на которую есть ссылки в этом проекте - это <code>pytest</code>.
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>pip<span class="w"> </span>install<span class="w"> </span>pytest
+</code></pre></div></p>
+<p>Впрочем, если вы не будете запускать тесты, то и она вам не нужна</p>
+<h2 id="_2">Встроенные тесты</h2>
+<p>Чтобы прогнать встроенные тесты, просто наберите в терминале (находясь в корне проекта)
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>pytest
+</code></pre></div>
+Чтобы уточнить какие тесты вам нужны, а какие нет, можете отредактировать файл <code>setup.cfg</code> - раздел <code>[tool:pytest]</code>.</p>
+<h2 id="_3">Ваши функции</h2>
+<h3 id="job">Создание Job</h3>
+<p>Если хотите, чтобы планировщик задач работал с какими-либо вашими функциями, то пакуйте функции и аргументы к ним в <code>functools.partial</code>. Эта обёртка обеспечивает максимальную простоту. </p>
+<p><div class="language-python highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">def</span> <span class="nf">my_function</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="o">...</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="k">return</span> <span class="n">result</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">job_1</span> <span class="o">=</span> <span class="n">Job</span><span class="p">(</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="p">[</span><span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">my_function</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;Hello&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mi">5</span> <span class="p">})],</span> 
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>     <span class="n">start_at</span><span class="o">=...</span><span class="p">,</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    <span class="n">max_working_time</span><span class="o">=...</span><span class="p">,</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    <span class="n">tries</span><span class="o">=...</span><span class="p">,</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    <span class="n">dependencies</span><span class="o">=</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="p">)</span>
+</code></pre></div>
+<code>functools.partial</code> должен быть в списке (или кортеже) и быть единственным его аргументом.</p>
+<p>Примеры создания <code>Job</code> смотрите в тестах (папка <code>tests</code>).</p>
+<h3 id="_4">Создание и запуск планировщика</h3>
+<p>Затем создайте Schedule и по очереди добавьте в него каждую <code>Job</code>.</p>
+<p><div class="language-python highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">scheduler</span> <span class="o">=</span> <span class="n">Scheduler</span><span class="p">()</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">scheduler</span><span class="o">.</span><span class="n">schedule</span><span class="p">(</span><span class="n">job_1</span><span class="p">)</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="o">...</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">scheduler</span><span class="o">.</span><span class="n">schedule</span><span class="p">(</span><span class="n">job_n</span><span class="p">)</span>
+</code></pre></div>
+И затем запустите
+<div class="language-python highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">scheduler</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">scheduler</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>  <span class="c1"># ждём конца всех работ</span>
+</code></pre></div></p>
+<h3 id="_5">Остановка и перезапуск планировщика</h3>
+<p>Дальше если вы собираетесь прервать процессы с возможностью перезапуска когда угодно
+<div class="language-python highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">scheduler</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</code></pre></div></p>
+<p>Теперь когда угодно вы можете сделать рестарт
+<div class="language-python highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">scheduler</span><span class="o">.</span><span class="n">restart</span><span class="p">()</span>
+</code></pre></div>
+Технически рестарт осуществляется за счёт сохранённых бэкап-файлов в папке <code>backup</code>.</p>
 
 
 
