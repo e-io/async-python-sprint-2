@@ -1,4 +1,4 @@
 job_id	status	start_at	max_working_time	tries_left	dependencies	pickled
-power_01	PROGRESS	ASAP	-1	0	()	pickled stub
-power_02	PROGRESS	ASAP	-1	0	()	pickled stub
-power_03	PROGRESS	ASAP	-1	0	()	pickled stub
+power_01	PROGRESS	ASAP	-1	1	()	b'bytes'
+power_02	PROGRESS	2024-01-06 17:54:54.436528	16	6	('power_01',)	b'bytes'
+power_03	PROGRESS	2024-01-06 17:55:02.436568	8	3	('power_01', 'power_02')	b'bytes'
