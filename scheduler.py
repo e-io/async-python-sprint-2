@@ -138,7 +138,7 @@ class _Scheduler:
                     logger.debug(f"Scheduler got result  '{response.new_results}' from {job.get_id()}")
                     continue
                 if response.status is ResponseStatus.error:
-                    logger.debug(f"Scheduler was informed about an exception '{response.new_results}' from {job.get_id()}")
+                    logger.debug(f"{job.get_id()} informed Scheduler about an exception '{response.new_results}'")
                     continue
                 if response.status is ResponseStatus.finish:
                     finished.append(i)
@@ -205,7 +205,7 @@ class _Scheduler:
             }
             json_.write(json.dumps(data))
         logger.debug(f'Additional backup json file is saved here: {path}')
-        sleep(10*self.__tick)  # just wait for while
+        sleep(10 * self.__tick)  # just wait for while
         self.__clear()
 
     def __clear(self) -> None:

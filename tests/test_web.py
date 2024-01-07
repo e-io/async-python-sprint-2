@@ -106,4 +106,3 @@ def test_web_job(cities_fixture):
         scheduler.schedule(job)
     scheduler.run()
     scheduler.join()
-
