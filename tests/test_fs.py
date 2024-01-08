@@ -114,6 +114,73 @@ def test_fs_directories(names_of_principles):
     """
 
 
+def job_fs_create_files(names, strings):
+    dir_ = TMP
+    for i, name in enumerate(names):
+        string_ = strings[i]
+
+        path = dir_ / (name + '.txt')
+        with open(path, 'w+') as file:
+            file.write(string_)
+
+    return f"{len(names)} files were created and different lines were written in each of them"
+
+
+def job_fs_modify_files(names, strings_new):
+    dir_ = TMP
+    for i, name in enumerate(names):
+        string_new = strings_new[i]
+
+        path = dir_ / (name + '.txt')
+        if not path.exists():
+            raise Exception(f"file {path} does not exist")
+        with open(path, 'w+') as file:
+            file.write(string_new)
+
+    return f"Content of {len(names)} files was re-written with the new content"
+
+
+def job_fs_read_files(names):
+    dir_ = TMP
+    last_words = []
+    for name in names:
+        path = dir_ / (name + '.txt')
+        if not path.exists():
+            raise Exception(f"file {path} does not exist")
+        with open(path, 'r') as file:
+            last_words.append(file.read().split(' ')[-1])
+
+    return 'Last words in every file: ' + '; '.join(last_words)
+
+
+def test_fs_files(names_of_principles):
+    job1 = Job(
+        [partial(job_fs_create_files, names_of_principles[0], names_of_principles[0])],
+    )
+
+    scheduler = Scheduler(pool_size=8)
+    scheduler.schedule(job1)
+    id1 = job1.get_id()
+
+    job2 = Job(
+        [partial(job_fs_modify_files, names_of_principles[0], names_of_principles[1])],
+        dependencies=(id1,),
+    )
+    scheduler.schedule(job2)
+    id2 = job2.get_id()
+
+    job3 = Job(
+        [partial(job_fs_read_files, names_of_principles[0])],
+        dependencies=(id1, id2),
+    )
+    scheduler.schedule(job3)
+
+    scheduler.run()
+
+    sleep(TICK)
+    scheduler.join()
+
+
 def job_fs_create_random_dirs_and_files():
     dir1 = Path('sources')
     dir2 = Path('data/collection')
