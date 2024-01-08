@@ -1,9 +1,9 @@
 from configparser import ConfigParser
 from functools import partial
 from multiprocessing import Process, Queue
-from pickle import dumps
+from pickle import dumps as pickle_dumps
 from time import sleep
-from typing import Callable, Any, Dict, Generator
+from typing import Callable, Any, Dict, Generator, Optional
 
 from customtypes import Request, Response, ResponseStatus, EXCEPTION
 from logger import logger
@@ -36,7 +36,7 @@ class Job:
                  max_working_time: int = -1,
                  tries: int = 1,
                  dependencies: tuple[str, ...] = tuple(),
-                 id: str = None):  # id should be set externally just in case of restoring from backup
+                 id: Optional[str] = None):  # id should be set externally just in case of restoring from backup
         self.__targets = targets
         self.start_at = start_at
         self.max_working_time = max_working_time
@@ -143,14 +143,15 @@ class Job:
         """Stop a job."""
         ...
 
-    def __repr__(self, ready: bool = True) -> list[str]:
-        """return itself for writing in CSV spreadsheet.
-        Order is according to 'header' in 'scheduler'
+    def list_repr(self, is_ready: bool = True) -> list[str]:
+        """return representation of a job for writing in CSV spreadsheet.
+        Order is according to 'header' in 'scheduler'.
+        This is like __repr__, but it returns a list, not str.
         """
         # the same 'PROGRESS' status for all cases except for 'READY' status
-        status = 'READY' if ready else 'PROGRESS'
-        func = 'pickled stub',
-        func = dumps(self.__targets[0])
+        status = 'READY' if is_ready else 'PROGRESS'
+        # func = 'pickled stub',
+        func = pickle_dumps(self.__targets[0])
         row = [self.__id,
                status,
                self.start_at if self.start_at else 'ASAP',
@@ -159,8 +160,9 @@ class Job:
                self.dependencies,
                func,
                ]
-        for i, item in enumerate(row):
+        row_of_str = []
+        for item in row:
             token = str(item)
             token.replace('\t', '    ')
-            row[i] = token if token else 'ERROR'
-        return row
+            row_of_str.append(token if token else 'ERROR')
+        return row_of_str

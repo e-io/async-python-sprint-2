@@ -29,22 +29,19 @@ class Scheduler:
         self.__tick = float(config['scheduler']['tick'])
         backup_path = str(config['scheduler']['backup'])
 
-        self.scheduler = _Scheduler(pool_size=pool_size, tick=self.__tick, backup=backup_path)
-        self.process = None
-        self.queue = None
+        self.queue: Queue = Queue()
+        self.scheduler = _Scheduler(queue=self.queue, pool_size=pool_size, tick=self.__tick, backup=backup_path)
+        self.process = Process(target=self.scheduler.run,)
 
     def schedule(self, job: Job) -> None:
         """Add a job in the list of pending jobs."""
         self.scheduler.schedule(job)
 
     def run(self) -> None:
-        scheduler = self.scheduler
-        self.queue = Queue()
-        queue = self.queue
-        self.process = Process(target=scheduler.run, args=(queue,))
+        """Start a process with real _Scheduler.
+        It's recommended to use join() (or sleep()) after run() in your function
+        """
         self.process.start()
-        # sleep(10 * self.__tick)
-        # self.join()
 
     def join(self) -> None:
         self.process.join()
@@ -52,12 +49,19 @@ class Scheduler:
     def stop(self) -> None:
         logger.debug("Scheduler.stop is called")
         self.queue.put('stop')
+        sleep(self.__tick)
+        self.clear()
+
+    def clear(self) -> None:
+        del self.scheduler
+        del self.process
+        del self.queue
 
     def restart(self) -> None:
         scheduler = self.scheduler
         self.queue = Queue()
-        queue = self.queue
-        self.process = Process(target=scheduler.restart, args=(queue,))
+        self.scheduler.queue = self.queue
+        self.process = Process(target=scheduler.restart,)
         self.process.start()
 
 
@@ -77,21 +81,20 @@ class _Scheduler:
     __tick : float
         something like 'a frequency' of the whole project in seconds
     """
-    def __init__(self, pool_size: int, tick: float, backup: str) -> None:
+    def __init__(self, queue: Queue, pool_size: int, tick: float, backup: str) -> None:
         self.__pool_size: int = pool_size
         self.__pending: list[Job] = []
         self.__pool: list[Job] = []
         self.__ready: list[Job] = []
         self.__tick: float = tick
         self.backup_path: Path = Path(backup)
-        self.queue = None
+        self.queue = queue
 
     def schedule(self, job: Job) -> None:
         """Add a job in the list of pending jobs."""
         self.__pending.append(job)
 
-    def run(self, queue: Queue) -> None:
-        self.queue = queue
+    def run(self) -> None:
         self.__run()
 
     def __run(self) -> None:
@@ -100,47 +103,22 @@ class _Scheduler:
             sleep(self.__tick)
             logger.debug("The first line of main 'while' cycle of Scheduler.")
 
-            space = self.__pool_size - len(self.__pool)  # must be >=0
-
-            for _ in range(space):
-                if not self.__pending:  # not targets anymore
+            if not self.queue.empty():
+                message = self.queue.get()
+                if message == 'stop':
+                    self.stop()
                     break
-                job = self.__pending.pop(0)
-                job.run()
-                logger.debug(f"Initial calling of 'next' for a job with id '{job.get_id()}'")
-                next(job.loop)
-                self.__pool.append(job)
+
+            self._move_from_pending_to_pool()
 
             if not self.__pool:
                 break  # no job anymore
 
             finished: list[int] = []  # indices of finished jobs
             for (i, job) in enumerate(self.__pool):
-                sleep(self.__tick / 4)
-                if not self.queue.empty():
-                    message = self.queue.get()
-                    self.queue.put(message)
-                    if message == 'stop':
-                        self.stop()
-                        break
-                    else:
-                        pass  # just ignore
+                is_finished = self._handle_1_job(job)
 
-                logger.debug(f"A call of 'next' for {job.get_id()}")
-                next(job.loop)
-                logger.debug(f"Sending request to {job.get_id()}")
-                response: Response = job.loop.send(Request.report_status)
-                logger.debug(f"Scheduler got response '{response.status.value}'")
-
-                if response.status is ResponseStatus.waiting:
-                    continue
-                if response.status is ResponseStatus.result:
-                    logger.debug(f"Scheduler got result  '{response.new_results}' from {job.get_id()}")
-                    continue
-                if response.status is ResponseStatus.error:
-                    logger.debug(f"{job.get_id()} informed Scheduler about an exception '{response.new_results}'")
-                    continue
-                if response.status is ResponseStatus.finish:
+                if is_finished:
                     finished.append(i)
 
             for i in finished:
@@ -151,6 +129,47 @@ class _Scheduler:
 
         logger.debug(f"Scheduler finished its work. "
                      f"Finished jobs: {len(self.__ready)}")
+
+    def _move_from_pending_to_pool(self):
+        space = self.__pool_size - len(self.__pool)  # must be >=0
+
+        for _ in range(space):
+            if not self.__pending:  # not targets anymore
+                return
+            job = self.__pending.pop(0)
+            job.run()
+            logger.debug(f"Initial calling of 'next' for a job with id '{job.get_id()}'")
+            next(job.loop)
+            self.__pool.append(job)
+
+    def _handle_1_job(self, job: Job) -> bool:
+        """Handle 1 job for one time. If job is finished, return True. If not - return False."""
+        sleep(self.__tick / 4)
+        if not self.queue.empty():
+            message = self.queue.get()
+            self.queue.put(message)
+            if message == 'stop':
+                return False
+            else:
+                pass  # just ignore
+
+        logger.debug(f"A call of 'next' for {job.get_id()}")
+        next(job.loop)
+        logger.debug(f"Sending request to {job.get_id()}")
+        response: Response = job.loop.send(Request.report_status)
+        logger.debug(f"Scheduler got response '{response.status.value}'")
+
+        if response.status is ResponseStatus.waiting:
+            return False
+        if response.status is ResponseStatus.result:
+            logger.debug(f"Scheduler got result  '{response.new_results}' from {job.get_id()}")
+            return False
+        if response.status is ResponseStatus.error:
+            logger.debug(f"{job.get_id()} informed Scheduler about an exception '{response.new_results}'")
+            return False
+        if response.status is ResponseStatus.finish:
+            return True
+        return False
 
     def stop(self) -> None:
         """Stop all jobs and backup their condition."""
@@ -187,15 +206,16 @@ class _Scheduler:
 
             sleep(self.__tick)
 
+            def write_row(job: Job, is_ready: bool):
+                row: list = job.list_repr(is_ready=is_ready)
+                if row:
+                    csv_writer.writerow(row)
+
             # this is the most correct order for the correct restore later
             for job in [*self.__pool, *self.__pending, ]:
-                row: list = job.__repr__(ready=False)
-                if row:
-                    csv_writer.writerow(row)
+                write_row(job, False)
             for job in self.__ready:
-                row: list = job.__repr__(ready=True)
-                if row:
-                    csv_writer.writerow(row)
+                write_row(job, False)
         logger.debug(f'A backup is saved here: {path}')
 
         path = path.with_suffix('.json')
@@ -216,10 +236,9 @@ class _Scheduler:
         del self.__pool_size
         del Job.all_id
 
-    def restart(self, queue: Queue) -> None:
+    def restart(self) -> None:
         """Start all jobs again where they were stopped."""
         logger.debug("This is a call of restart method")
-        self.queue = queue
         self.__restore()
         self.__run()
 
@@ -263,5 +282,7 @@ class _Scheduler:
                           )
 
                 self.schedule(job)
-                logger.debug(f"Next job is scheduled: {job.__repr__(row['status'])[:-1]}")
+
+                is_ready = True if row['status'] == 'READY' else False
+                logger.debug(f"Next job is scheduled: {job.list_repr(is_ready)[:-1]}")
         logger.debug(f"Scheduler is restored. It contains {len(self.__pending)} jobs.")

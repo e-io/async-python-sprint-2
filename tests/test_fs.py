@@ -66,7 +66,7 @@ def job_fs_modify_folders(names: list, names_new: list):
         dir_new = dir_ / names_new[i]
 
         dir_ = dir_old.rename(dir_new)
-    return f"A chain of folders is renamed '{names_new[0]}' ... '{names[-1]}'"
+    return f"A chain of folders is renamed '{names_new[0]}' ... '{names_new[-1]}'"
 
 
 def job_fs_delete_folders(names: list):
