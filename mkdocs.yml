@@ -1,4 +1,4 @@
-site_name: async-python-sprint-2 +
+site_name: async-python-sprint-2
 
 theme:
   name: "material"

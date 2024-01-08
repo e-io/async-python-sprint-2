@@ -14,6 +14,9 @@ TICK = float(config['scheduler']['tick'])
 
 
 def do_jobs_sequentially(targets: list[partial]):
+    """Do jobs strictly one after another.
+    This is one of basic scenarios for some tests.
+    """
     scheduler = Scheduler(pool_size=9)
     ids = []
     for target in targets:

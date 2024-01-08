@@ -1,4 +1,10 @@
-Страница для описания тестов
+# Тесты, написанные для данного проекта
+
+## **conftest**
+:::tests.conftest
+
+## **scenarios.py**
+:::tests.scenarios
 
 ## **test_fs**
 :::tests.test_fs
@@ -11,6 +17,3 @@
 
 ## **test_integration**
 :::tests.test_integration
-
-## **conftest**
-:::tests.conftest

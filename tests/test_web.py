@@ -1,6 +1,6 @@
 """The file is for tests, required by the initial statement of work (SoW)
 
-  - работа с сетью: обработка ссылок (GET-запросы) и анализ полученного результата;
+  - `работа с сетью: обработка ссылок (GET-запросы) и анализ полученного результата;`
 """
 
 from configparser import ConfigParser
