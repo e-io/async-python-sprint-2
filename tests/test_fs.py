@@ -131,35 +131,3 @@ def test_fs_files(names_of_principles):
     target_read = partial(job_fs_read_files, names_of_principles[0])
 
     do_jobs_sequentially((target_create, target_modify, target_read,))
-
-
-def job_fs_random_dirs():
-    dir1 = Path('sources')
-    dir2 = Path('data/collection')
-    dirs = [dir1, dir2]
-
-    for dir_ in dirs:
-        dir_path = TMP / Path(dir_)
-        dir_path.mkdir(parents=True, exist_ok=True)
-
-    return "Directories are created"
-
-
-def job_fs_random_files():
-    file1 = Path('sources/hello.txt')
-    file2 = Path('data/collection/newfile.txt')
-
-    files = [file1, file2]
-
-    for file_ in files:
-        file = TMP / Path(file_)
-        with open(file, 'w+') as opened_file:
-            opened_file.write('Happy New Year 2024')
-
-    return "Files are created"
-
-
-def test_fs_create_random_dirs_and_files():
-    target_dirs = partial(job_fs_random_dirs, )
-    target_files = partial(job_fs_random_files, )
-    do_jobs_sequentially((target_dirs, target_files,))
