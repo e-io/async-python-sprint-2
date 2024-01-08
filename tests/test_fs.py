@@ -9,13 +9,11 @@ from contextlib import redirect_stdout
 from functools import partial
 from io import StringIO
 from pathlib import Path
-from time import sleep
 
 from pytest import fixture
 
-from job import Job
 from logger import logger
-from scheduler import Scheduler
+from scenarios import do_jobs_sequentially
 
 config = ConfigParser()
 config.read('setup.cfg')
@@ -81,37 +79,11 @@ def job_fs_delete_folders(names: list):
 
 
 def test_fs_directories(names_of_principles):
-    job1 = Job(
-        [partial(job_fs_create_folders, names_of_principles[0])],
-    )
+    target_create = partial(job_fs_create_folders, names_of_principles[0])
+    target_modify = partial(job_fs_modify_folders, *names_of_principles)
+    target_delete = partial(job_fs_delete_folders, names_of_principles[1])
 
-    scheduler = Scheduler(pool_size=6)
-    scheduler.schedule(job1)
-    id1 = job1.get_id()
-
-    job2 = Job(
-        [partial(job_fs_modify_folders, *names_of_principles)],
-        dependencies=(id1,),
-    )
-    scheduler.schedule(job2)
-    id2 = job2.get_id()
-
-    job3 = Job(
-        [partial(job_fs_delete_folders, names_of_principles[1])],
-        dependencies=(id1, id2),
-    )
-    scheduler.schedule(job3)
-
-    scheduler.run()
-
-    sleep(TICK)
-    scheduler.join()
-    """
-    scheduler.stop()
-    sleep(TICK)
-    scheduler.restart()
-    scheduler.join()
-    """
+    do_jobs_sequentially([target_create, target_modify, target_delete])
 
 
 def job_fs_create_files(names, strings):
@@ -154,53 +126,40 @@ def job_fs_read_files(names):
 
 
 def test_fs_files(names_of_principles):
-    job1 = Job(
-        [partial(job_fs_create_files, names_of_principles[0], names_of_principles[0])],
-    )
+    target_create = partial(job_fs_create_files, names_of_principles[0], names_of_principles[0])
+    target_modify = partial(job_fs_modify_files, names_of_principles[0], names_of_principles[1])
+    target_read = partial(job_fs_read_files, names_of_principles[0])
 
-    scheduler = Scheduler(pool_size=8)
-    scheduler.schedule(job1)
-    id1 = job1.get_id()
-
-    job2 = Job(
-        [partial(job_fs_modify_files, names_of_principles[0], names_of_principles[1])],
-        dependencies=(id1,),
-    )
-    scheduler.schedule(job2)
-    id2 = job2.get_id()
-
-    job3 = Job(
-        [partial(job_fs_read_files, names_of_principles[0])],
-        dependencies=(id1, id2),
-    )
-    scheduler.schedule(job3)
-
-    scheduler.run()
-
-    sleep(TICK)
-    scheduler.join()
+    do_jobs_sequentially((target_create, target_modify, target_read,))
 
 
-def job_fs_create_random_dirs_and_files():
+def job_fs_random_dirs():
     dir1 = Path('sources')
     dir2 = Path('data/collection')
-    file1 = Path('data/collection/newfile.txt')
-
     dirs = [dir1, dir2]
-    files = [file1, ]
-
-    for file in files:
-        dirs.append(file.parent)
 
     for dir_ in dirs:
-        dir = TMP / Path(dir_)
-        dir.mkdir(parents=True, exist_ok=True)
+        dir_path = TMP / Path(dir_)
+        dir_path.mkdir(parents=True, exist_ok=True)
+
+    return "Directories are created"
+
+
+def job_fs_random_files():
+    file1 = Path('sources/hello.txt')
+    file2 = Path('data/collection/newfile.txt')
+
+    files = [file1, file2]
 
     for file_ in files:
-        file = TMP/ Path(file_)
+        file = TMP / Path(file_)
         with open(file, 'w+') as opened_file:
             opened_file.write('Happy New Year 2024')
 
-    sleep(2 * TICK)
+    return "Files are created"
 
-    return "Directories are created"
+
+def test_fs_create_random_dirs_and_files():
+    target_dirs = partial(job_fs_random_dirs, )
+    target_files = partial(job_fs_random_files, )
+    do_jobs_sequentially((target_dirs, target_files,))

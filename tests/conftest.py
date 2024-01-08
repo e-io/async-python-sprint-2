@@ -5,6 +5,12 @@ from pytest import fixture
 from shutil import rmtree
 
 
+config = ConfigParser()
+config.read('setup.cfg')
+TICK = float(config['scheduler']['tick'])
+TMP = Path(config['tests']['tmp_folder'])
+BACKUP = Path(config['scheduler']['backup'])
+
 def pytest_configure():  # does not work
     config = ConfigParser()
     config.read('setup.cfg')
@@ -23,10 +29,16 @@ def fixture_for_power() -> tuple:
 
 
 def test_actions_before_all_tests():
-    """Remove backup folder and everything inside it."""
-    backup = Path('backup')
-    if backup.exists():
-        rmtree(backup)
+    """Remove backup and tmp folder and everything inside them.
+    Then, create tmp folder (it's needed for tests only)."""
+    backup_parent = BACKUP.parent
+    if backup_parent and backup_parent.exists():
+        rmtree(backup_parent)
+    tmp = TMP
+    if tmp.exists():
+        rmtree(tmp)
+    tmp.mkdir()
+
 
 @fixture()
 def fixtures_for_all_tests():

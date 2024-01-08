@@ -58,7 +58,6 @@ class Job:
             Job.all_id[name] += 1
         else:
             Job.all_id[name] = 1
-        logger.debug(f"all_id dictionary: {Job.all_id}")
 
         siblings = Job.all_id[name]  # other jobs which have the same basic name
         zero = '0' if siblings < 10 else ''
