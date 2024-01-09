@@ -5,16 +5,16 @@ from typing import Any
 
 
 class Request(Enum):
-    """A class used to represent signals from class Scheduler to class Job."""
+    """A class used to represent signals from class Scheduler to class Job.
+    Currently, it's just one type of signal.
+    """
     report_status = 'Report status'
 
 
 class ResponseStatus(Enum):
     """A class used to represent **kinds of signals** from class Job to class Scheduler."""
-    # depend
-    # timeout
-    waiting = 'Task is in progress. Results are waiting.'  # former 'progress'
-    error = 'Exception is caught'
+    waiting = 'Task is in progress. Results are waiting.'
+    error = 'Exception is caught.'
     result = 'A result of one task is ready.'
     finish = 'All tasks of this specific job are finished.'
 

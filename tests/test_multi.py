@@ -1,17 +1,13 @@
 """The file is for tests, required by the initial statement of work (SoW):
 
   - `описать конвейер выполнения основной задачи минимум из 3 задач,
-     зависящих друг от друга и выполняющихся последовательно друг за другом.`
+     зависящих друг от друга и выполняющихся последовательно друг за другом`
 """
-
 from configparser import ConfigParser
 from functools import partial
 from pathlib import Path
 
-from pytest import fixture
-
-from logger import logger
-from scenarios import do_jobs_sequentially
+from scenarios import schedule_jobs_sequentially, run_and_wait
 
 config = ConfigParser()
 config.read('setup.cfg')
@@ -60,8 +56,12 @@ def job_write_in_files():
 
 
 def test_multi_job():
-    """Test a conveyor (pipeline) of 3+ jobs"""
+    """Test a conveyor (pipeline) of 3+ jobs."""
     target_create_dirs = partial(job_create_dirs, )
     target_create_files = partial(job_create_files, )
     target_write_in_files = partial(job_write_in_files, )
-    do_jobs_sequentially((target_create_dirs, target_create_files, target_write_in_files,))
+    scheduler = schedule_jobs_sequentially((target_create_dirs,
+                                            target_create_files,
+                                            target_write_in_files,
+                                            ))
+    run_and_wait(scheduler)

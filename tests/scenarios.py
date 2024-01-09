@@ -4,7 +4,6 @@ from functools import partial
 from time import sleep
 
 from job import Job
-from logger import logger
 from scheduler import Scheduler
 
 
@@ -13,12 +12,12 @@ config.read('setup.cfg')
 TICK = float(config['scheduler']['tick'])
 
 
-def do_jobs_sequentially(targets: list[partial]):
-    """Do jobs strictly one after another.
+def schedule_jobs_sequentially(targets: list[partial]):
+    """Do jobs one after another.
     This is one of basic scenarios for some tests.
     """
-    scheduler = Scheduler(pool_size=9)
-    ids = []
+    scheduler = Scheduler()
+    ids: list[str] = []
     for target in targets:
         job = Job(
             [target],
@@ -26,15 +25,24 @@ def do_jobs_sequentially(targets: list[partial]):
         )
 
         scheduler.schedule(job)
-        ids.append(job.get_id)
+        ids.append(job.get_id())
+    return scheduler
 
+
+def run_and_wait(scheduler):
+    """Simplest scenario"""
     scheduler.run()
     sleep(TICK)
     scheduler.join()
 
-    """
-    scheduler.stop()
+
+def run_stop_and_restart(scheduler):
+    """Run scheduler, stop it and restart scheduler from backup"""
+    scheduler.run()
     sleep(TICK)
-    scheduler.restart()
-    scheduler.join()
-    """
+    scheduler.stop()
+    sleep(2 * TICK)
+    del scheduler
+    scheduler_new = Scheduler()
+    scheduler_new.restart()
+    scheduler_new.join()

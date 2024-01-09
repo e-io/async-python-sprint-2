@@ -181,7 +181,7 @@ def analyze_json(data):
 
     # analyzing days
     time_start = None
-    time_end = None
+    # time_end = None
 
     days_data = deep_getitem(data, INPUT_FORECAST_PATH)
     days = []
@@ -190,7 +190,7 @@ def analyze_json(data):
         d_date = d_info.date
 
         time_start = time_start or d_date
-        time_end = d_date
+        # time_end = d_date
 
         days.append(d_info.to_json())
 

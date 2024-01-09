@@ -1,10 +1,10 @@
-"""This file is for testing during development process"""
-
+"""This file is for just calculation tests.
+These tests don't require the internet and the file system.
+"""
 from configparser import ConfigParser
 from datetime import datetime, timedelta
 from functools import partial
 from time import sleep
-from typing import Any
 
 from pytest import fixture
 
@@ -18,20 +18,29 @@ TICK = float(config['scheduler']['tick'])
 
 
 def power(a, b):
-    sleep(10*TICK)
-    logger.debug(f"This is function 'power'. {a}**{b} = {a ** b}")
+    sleep(8 * TICK)
+    logger.debug(f"This is function 'power'. {a}**{b} = {a ** b}.")
     a **= b
     return a
 
 
-def test_3jobs(fixture_for_power: tuple) -> None:
+@fixture
+def fixture_for_power() -> tuple:
+    tuples = ((2, 4),
+              (3, 5),
+              (5, 4),
+              )
+    return tuples
+
+
+def test_calculations(fixture_for_power: tuple) -> None:
     """
-    Test "three jobs for one scheduler"
+    Test "three simple jobs for a scheduler"
 
     Parameters
     ----------
     fixture_for_power : fixture
-        a fixture with variables for power function a**b
+        a fixture with variables for a power function a**b
     """
     tuples = fixture_for_power
 
@@ -46,14 +55,14 @@ def test_3jobs(fixture_for_power: tuple) -> None:
     scheduler.join()
 
 
-def test_a_stop(fixture_for_power: tuple) -> None:
+def test_calculations_with_a_stop(fixture_for_power: tuple) -> None:
     """
-    Test "three jobs for one scheduler"
+    Test "three jobs for a scheduler with stop and rerun"
 
     Parameters
     ----------
     fixture_for_power : fixture
-        a fixture with variables for power function a**b
+        a fixture with variables for a power function a**b
     """
     tuples = fixture_for_power
 
@@ -82,27 +91,11 @@ def test_a_stop(fixture_for_power: tuple) -> None:
     scheduler.schedule(job3)
 
     scheduler.run()
-    sleep(3*TICK)
+    sleep(4 * TICK)
     scheduler.stop()
-    sleep(8*TICK)
+    sleep(8 * TICK)
     del scheduler
     scheduler_new = Scheduler()
     scheduler_new.restart()
     sleep(TICK)
     scheduler_new.join()
-
-
-def test_3tasks_in_1job(fixture_for_power: tuple):
-    tuples = fixture_for_power
-
-    job_3tasks = Job([partial(power, *args_) for args_ in tuples])
-    scheduler = Scheduler()
-
-    scheduler.schedule(job_3tasks)
-
-    args = [i + 1 for i in tuples[0]]
-    job_1task = Job([partial(power, *args)])
-
-    scheduler.schedule(job_1task)
-
-    scheduler.run()
