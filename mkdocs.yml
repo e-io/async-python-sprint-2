@@ -1,0 +1,35 @@
+site_name: async-python-sprint-2
+
+theme:
+  name: "material"
+  palette:
+    # all colors are listed here: https://squidfunk.github.io/mkdocs-material/setup/changing-the-colors/
+    primary: "cyan"
+    accent: "deep purple"
+
+plugins:
+  - search
+  - table-reader
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: numpy
+
+markdown_extensions:
+  - pymdownx.snippets:
+      base_path: ["."]
+  - pymdownx.highlight:
+      anchor_linenums: true
+      pygments_lang_class: true
+  - pymdownx.superfences
+
+nav:
+  - Главная: index.md
+  - Как запускать этот проект: how-to-guides.md
+  - Пример бэкапа: backup-spreadsheet.md
+  - Scheduler and _Scheduler (Планировщик): scheduler.md
+  - class Job (Задача): job.md
+  - Тесты: tests.md
+  - Дополнительно:
+    - Про документатор mkdocs: mkdocs-basics.md
