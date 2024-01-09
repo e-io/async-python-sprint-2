@@ -6,5 +6,4 @@ venv/
 .mypy_cache/
 .pytest_cache/
 
-backup/
 tmp/

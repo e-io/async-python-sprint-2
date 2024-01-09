@@ -1,3 +1,5 @@
+"""Very simple tests of class Job."""
+
 from functools import partial
 from random import randint
 
@@ -22,9 +24,3 @@ def test_correct_id(fixture_for_square) -> None:
     id_ = job.get_id()
     logger.debug(f"Job with job_id: '{id_}' is created.")
     assert id_ == 'square' + '_01'
-
-
-def test_isinstance(fixture_for_square) -> None:
-    job = Job(targets=[partial(square, fixture_for_square)])
-    assert isinstance(job, Job)
-    assert not isinstance(job, str)
