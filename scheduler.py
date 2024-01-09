@@ -270,7 +270,7 @@ class _Scheduler:
 
                 if start_at == 'ASAP':
                     start_at = ''
-                job = Job(targets=(func,),
+                job = Job(targets=[func,],
                           start_at=start_at,
                           max_working_time=int(row['max_working_time']),
                           tries=int(row['tries_left']),

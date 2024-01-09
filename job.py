@@ -29,7 +29,7 @@ class Job:
 
     config = ConfigParser()
     config.read('setup.cfg')
-    __max_id_length = float(config['job']['max_id_length'])
+    __max_id_length = int(config['job']['max_id_length'])
     __tick = float(config['scheduler']['tick'])
 
     def __init__(self, targets: list[partial],
@@ -50,7 +50,7 @@ class Job:
         else:
             self.set_id()
 
-    def set_id(self) -> str:
+    def set_id(self) -> None:
         name = self.__targets[0].func.__name__
         if len(name) > Job.__max_id_length:
             name = name[0:Job.__max_id_length]
@@ -138,7 +138,7 @@ class Job:
     def clear() -> None:
         """Clear itself when user sent `stop` signal"""
         del Job.all_id
-        Job.all_id = None
+        Job.all_id = {}
 
     def list_repr(self, is_ready: bool = True) -> list[str]:
         """return the representation of a job for writing in a CSV spreadsheet.

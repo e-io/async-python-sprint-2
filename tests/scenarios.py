@@ -17,7 +17,7 @@ def schedule_jobs_sequentially(targets: list[partial]):
     This is one of basic scenarios for some tests.
     """
     scheduler = Scheduler()
-    ids = []
+    ids: list[str] = []
     for target in targets:
         job = Job(
             [target],
