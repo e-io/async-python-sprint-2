@@ -2,11 +2,12 @@
 
 ```mermaid
 graph TD
-    Scheduler --> |multiprocessing.Process, Queue| _Scheduler
-    _Scheduler --> |"coroutine\n(yield, send, next)"| Job1
-    _Scheduler --> |coroutine| Job2
-    _Scheduler --> |coroutine| JobN
-    Job1 --> |multiprocessing.Process, Queue| Target1("Target1 \n(the same term as Task here)")
-    Job2 --> |multiprocessing.Process, Queue| Target2("Target2")
-    JobN --> |multiprocessing.Process, Queue| TargetN("TargetN")
+    your_code("Your code") --> |the simplest OOP calls of methods| Scheduler
+    Scheduler --> |"Process with Queue\n(from ''multiprocessing'')"| _Scheduler
+    _Scheduler <--> |coroutine| Job1
+    _Scheduler <--> |"coroutine\n(native Python's\nyield and send())"| Job2
+    _Scheduler <--> |coroutine| JobN
+    Job1 <--> |"Process with Queue"| Target1("Target1")
+    Job2 <--> |"Process with Queue\n(from ''multiprocessing'')"| Target2("Target2 \n(the same term as Task)")
+    JobN <--> |"Process with Queue"| TargetN("TargetN")
 ```
