@@ -1,4 +1,4 @@
 job_id	status	start_at	max_working_time	tries_left	dependencies	pickled
-power_01	PROGRESS	ASAP	-1	1	()	b'bytes'
-power_02	PROGRESS	2024-01-06 17:54:54.436528	16	6	('power_01',)	b'bytes'
-power_03	PROGRESS	2024-01-06 17:55:02.436568	8	3	('power_01', 'power_02')	b'bytes'
+create_files_01	READY	ASAP	-1	1	()	b'bytes'
+modify_files_01	PROGRESS	2024-01-06 17:54:54.436528	16	6	('create_files_01',)	b'bytes'
+read_files_01	PROGRESS	2024-01-06 17:55:02.436568	8	3	('create_files_01', 'modify_files_01')	b'bytes'
