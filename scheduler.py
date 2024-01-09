@@ -1,28 +1,27 @@
+import json
+import pickle
 from ast import literal_eval
 from configparser import ConfigParser
 from csv import (
     writer as Csv_writer,
     DictReader
 )
-import json
-import pickle
 from multiprocessing import Process, Queue
 from pathlib import Path
 from time import sleep
 
-from job import Job
-from logger import logger
 from customtypes import (
     Request,
     Response,
     ResponseStatus
 )
+from job import Job
+from logger import logger
 
 
 class Scheduler:
-    """
-    The 'official' simple wrap for the class _Scheduler
-    """
+    """The 'official' simple wrap for the class _Scheduler."""
+
     def __init__(self, pool_size: int = 10) -> None:
         config = ConfigParser()
         config.read('setup.cfg')
@@ -39,7 +38,7 @@ class Scheduler:
 
     def run(self) -> None:
         """Start a process with real _Scheduler.
-        It's recommended to use join() (or sleep()) after run() in your function
+        It's highly recommended to use join() (or sleep()) after run() in your function
         """
         self.process.start()
 
@@ -47,7 +46,7 @@ class Scheduler:
         self.process.join()
 
     def stop(self) -> None:
-        logger.debug("Scheduler.stop is called")
+        logger.debug("Scheduler.stop() is called.")
         self.queue.put('stop')
         sleep(self.__tick)
         self.clear()
@@ -82,13 +81,14 @@ class _Scheduler:
         something like 'a frequency' of the whole project in seconds
     """
     def __init__(self, queue: Queue, pool_size: int, tick: float, backup: str) -> None:
+        self.queue = queue
         self.__pool_size: int = pool_size
+        self.__tick: float = tick
+        self.backup_path: Path = Path(backup)
+
         self.__pending: list[Job] = []
         self.__pool: list[Job] = []
         self.__ready: list[Job] = []
-        self.__tick: float = tick
-        self.backup_path: Path = Path(backup)
-        self.queue = queue
 
     def schedule(self, job: Job) -> None:
         """Add a job in the list of pending jobs."""
@@ -112,7 +112,7 @@ class _Scheduler:
             self._move_from_pending_to_pool()
 
             if not self.__pool:
-                break  # no job anymore
+                break  # there are no jobs anymore
 
             finished: list[int] = []  # indices of finished jobs
             for (i, job) in enumerate(self.__pool):
@@ -128,7 +128,7 @@ class _Scheduler:
                 self.__pool.pop(i)
 
         logger.debug(f"Scheduler finished its work. "
-                     f"Finished jobs: {len(self.__ready)}")
+                     f"Finished jobs: {len(self.__ready)}.")
 
     def _move_from_pending_to_pool(self):
         space = self.__pool_size - len(self.__pool)  # must be >=0
@@ -138,13 +138,15 @@ class _Scheduler:
                 return
             job = self.__pending.pop(0)
             job.run()
-            logger.debug(f"Initial calling of 'next' for a job with id '{job.get_id()}'")
+            logger.debug(f"Initial calling of 'next' for a job with id '{job.get_id()}'.")
             next(job.loop)
             self.__pool.append(job)
 
     def _handle_1_job(self, job: Job) -> bool:
-        """Handle 1 job for one time. If job is finished, return True. If not - return False."""
-        sleep(self.__tick / 4)
+        """Handle 1 job for one time.
+        If job is finished, return True. If not - return False.
+        """
+        sleep(self.__tick / 2)
         if not self.queue.empty():
             message = self.queue.get()
             self.queue.put(message)
@@ -153,19 +155,19 @@ class _Scheduler:
             else:
                 pass  # just ignore
 
-        logger.debug(f"A call of 'next' for {job.get_id()}")
+        logger.debug(f"A call of 'next' for {job.get_id()}.")
         next(job.loop)
-        logger.debug(f"Sending request to {job.get_id()}")
+        logger.debug(f"Sending request to {job.get_id()}.")
         response: Response = job.loop.send(Request.report_status)
-        logger.debug(f"Scheduler got response '{response.status.value}'")
+        logger.debug(f"Scheduler got response '{response.status.value}'.")
 
         if response.status is ResponseStatus.waiting:
             return False
         if response.status is ResponseStatus.result:
-            logger.debug(f"Scheduler got result  '{response.new_results}' from {job.get_id()}")
+            logger.debug(f"Scheduler got result  '{response.new_results}' from {job.get_id()}.")
             return False
         if response.status is ResponseStatus.error:
-            logger.debug(f"{job.get_id()} informed Scheduler about an exception '{response.new_results}'")
+            logger.warning(f"{job.get_id()} informed Scheduler about an exception '{response.new_results}'.")
             return False
         if response.status is ResponseStatus.finish:
             return True
@@ -173,27 +175,25 @@ class _Scheduler:
 
     def stop(self) -> None:
         """Stop all jobs and backup their condition."""
-        logger.debug("This is _Scheduler.stop()")
+        logger.debug("This is _Scheduler.stop().")
         self.__backup()
         exit(0)
 
     def __backup(self) -> None:
         """Save the state of all "jobs" in a CSV file"""
-        logger.debug("This is '__backup' method'")
+        logger.debug("This is '__backup' method'.")
 
         spreadsheet_extension = '.tsv'
+        path = self.backup_path.with_suffix(spreadsheet_extension)
 
-        path = self.backup_path
-        if path.suffix != spreadsheet_extension:
-            path = path.with_suffix(spreadsheet_extension)
-        logger.debug(f'A backup will be saved in the file {path}')
+        logger.debug(f"A backup will be saved in the file {path}.")
         if path.parent:
             if not path.parent.exists():
                 path.parent.mkdir(parents=True, exist_ok=True)
 
         with open(path, 'w+') as csv_:  # spreadsheet
-            delimeter = '\t'
-            csv_writer = Csv_writer(csv_, delimiter=delimeter)
+            delimiter = '\t'
+            csv_writer = Csv_writer(csv_, delimiter=delimiter)
             header = ['job_id',
                       'status',
                       'start_at',
@@ -206,8 +206,8 @@ class _Scheduler:
 
             sleep(self.__tick)
 
-            def write_row(job: Job, is_ready: bool):
-                row: list = job.list_repr(is_ready=is_ready)
+            def write_row(job_: Job, is_ready: bool):
+                row: list = job_.list_repr(is_ready=is_ready)
                 if row:
                     csv_writer.writerow(row)
 
@@ -216,7 +216,7 @@ class _Scheduler:
                 write_row(job, False)
             for job in self.__ready:
                 write_row(job, False)
-        logger.debug(f'A backup is saved here: {path}')
+        logger.debug(f"A backup is saved here: {path}.")
 
         path = path.with_suffix('.json')
         with open(path, 'w+') as json_:
@@ -224,33 +224,30 @@ class _Scheduler:
                 'pool_size': self.__pool_size,
             }
             json_.write(json.dumps(data))
-        logger.debug(f'Additional backup json file is saved here: {path}')
-        sleep(10 * self.__tick)  # just wait for while
+        logger.debug(f"An additional backup json file is saved here: {path}.")
+        sleep(8 * self.__tick)  # just wait for while
         self.__clear()
 
     def __clear(self) -> None:
-        """Just prevent usage of _Scheduler object if it was stopped"""
+        """Just prevent the usage of _Scheduler object if it was stopped."""
         del self.__pool
         del self.__pending
         del self.__ready
         del self.__pool_size
-        del Job.all_id
+        Job.clear()
 
     def restart(self) -> None:
         """Start all jobs again where they were stopped."""
-        logger.debug("This is a call of restart method")
+        logger.debug("This is a call of restart method.")
         self.__restore()
         self.__run()
 
     def __restore(self) -> None:
-        """Restore all jobs using backup file."""
-        logger.debug("This is a call of __restore method")
-        path = self.backup_path
+        """Restore all jobs using a backup file."""
+        logger.debug("This is a call of __restore method.")
 
-        path = path.with_suffix('.json')
+        path = self.backup_path.with_suffix('.json')
         if not path.exists():
-            # logger.debug(path)
-            # logger.debug(Path('.').resolve())
             raise Exception('Backup (.json) does not exist. So, it is impossible to restore Scheduler.')
         with open(path, 'r') as json_:
             dict_ = json.load(json_)
@@ -258,13 +255,13 @@ class _Scheduler:
 
         path = path.with_suffix('.tsv')
         if not path.exists():
-            raise Exception('Backup does not exist. So, it is impossible to restore jobs.')
+            raise Exception('Backup (.tsv) does not exist. So, it is impossible to restore jobs.')
         with open(path, 'r') as tsv:
             dict_reader = DictReader(tsv, delimiter='\t')
 
             for row in dict_reader:
                 if row['status'] != 'PROGRESS':
-                    continue
+                    continue  # skip every job which was already finished
 
                 func = pickle.loads(literal_eval(row['pickled']))
 
@@ -273,7 +270,7 @@ class _Scheduler:
 
                 if start_at == 'ASAP':
                     start_at = ''
-                job = Job(targets=[func,],
+                job = Job(targets=(func,),
                           start_at=start_at,
                           max_working_time=int(row['max_working_time']),
                           tries=int(row['tries_left']),
@@ -284,5 +281,5 @@ class _Scheduler:
                 self.schedule(job)
 
                 is_ready = True if row['status'] == 'READY' else False
-                logger.debug(f"Next job is scheduled: {job.list_repr(is_ready)[:-1]}")
+                logger.debug(f"Next job is scheduled: {job.list_repr(is_ready)[:-1]}.")
         logger.debug(f"Scheduler is restored. It contains {len(self.__pending)} jobs.")

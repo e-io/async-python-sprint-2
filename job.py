@@ -11,16 +11,17 @@ from logger import logger
 
 class Job:
     """
-    A class used to represent a Job. It contains one or several tasks inside it.
-    Each task should be a 'functools.partial'.
-    'Partial' is like a zip with a target function and arguments together.
+    A class used to represent a Job. It contains one target (task) inside it.
+    A target should be a `functools.partial`.
+    `partial` is a handy construction
+    which is like a zip with a target function and arguments together.
 
     Attributes
     ----------
     all_id : dict
         contains already used identifiers and their total number
     __max_id_length : int
-        the max length of identifier (also 2 digits will be added like '_01').
+        the max length of identifier (also 3 symbols will be added like '_01', '_02' etc.).
     __tick : float
         something like 'a frequency' of the whole project in seconds
     """
@@ -46,22 +47,22 @@ class Job:
 
         if id:   # id should be set from outside just in case of restoring from backup
             self.__id = id
-            return
+        else:
+            self.set_id()
 
-        name = ''
-        for target in targets:
-            name += target.func.__name__
-            if len(name) > Job.__max_id_length:
-                break
+    def set_id(self) -> str:
+        name = self.__targets[0].func.__name__
+        if len(name) > Job.__max_id_length:
+            name = name[0:Job.__max_id_length]
 
         if name in Job.all_id.keys():
             Job.all_id[name] += 1
         else:
             Job.all_id[name] = 1
 
-        siblings = Job.all_id[name]  # other jobs which have the same basic name
-        zero = '0' if siblings < 10 else ''
-        self.__id = name + '_' + zero + str(siblings)
+        siblings_number = Job.all_id[name]  # other jobs which have the same basic name
+        zero = '0' if siblings_number < 10 else ''
+        self.__id = name + '_' + zero + str(siblings_number)
 
     def get_id(self) -> str:
         """Return identifier of a Job."""
@@ -69,18 +70,18 @@ class Job:
 
     @staticmethod
     def target_and_queue(target: Callable, queue: Queue) -> None:
-        """Wrap a function into another function and put a result in a queue."""
+        """Wrap a function into another function and put a result in the queue."""
         try:
             result = str(target())
         except Exception as e:
-            logger.warning(f'Exception is caught {e}')
+            logger.warning(f"Exception is caught {e}.")
             queue.put(EXCEPTION + str(e))
         else:
+            logger.debug(f"Result {result} is put in the queue.")
             queue.put(result)
-            logger.debug(f'Result {result} is put in the queue')
 
     def run(self) -> None:
-        """Start a coroutine. It's being called just one time during a life of Job object."""
+        """Start a coroutine. It's being called just one time during a life of a Job object."""
         self.loop = self.start_loop()
 
     def start_loop(self) -> Generator[Response | None, Request, None]:
@@ -96,7 +97,6 @@ class Job:
         """
         yield None
         for i, target in enumerate(self.__targets):
-            # Job do tasks one after another. Not in parallel
             queue: Queue = Queue()
             func = partial(Job.target_and_queue, target, queue)
             process = Process(target=func)
@@ -104,29 +104,29 @@ class Job:
 
             while True:
                 request = yield None
-                logger.debug(f"Job got request '{request.value}'")
-                sleep(3 * Job.__tick)
+                logger.debug(f"Job got request '{request.value}'.")
+                sleep(4 * Job.__tick)
 
                 response: None | Response = None
                 if request != Request.report_status:
                     response = Response(ResponseStatus.error, None)
-                    logger.debug("Unknown type of request")
+                    logger.debug("Unknown type of request.")
                     yield response
                     continue
 
                 if process.is_alive():
                     response = Response(ResponseStatus.waiting, None)
-                    logger.debug(f"Job returns status '{ResponseStatus.waiting.value}'")
+                    logger.debug(f"Job returns status '{ResponseStatus.waiting.value}'.")
                     yield response
                     continue
 
                 result = None if queue.empty() else queue.get()
                 if result and result.startswith(EXCEPTION):
                     result = result[len(EXCEPTION):]
-                    logger.debug(f'Exception {result} is taken from the queue')
+                    logger.warning(f"Exception {result} is taken from the queue.")
                     response = Response(ResponseStatus.error, {i: result})
                 else:
-                    logger.debug(f'{self.__id}: Result {result} is taken from the queue')
+                    logger.debug(f"{self.__id}: Result {result} is taken from the queue.")
                     response = Response(ResponseStatus.result, {i: result})
                 yield response
                 break
@@ -134,22 +134,19 @@ class Job:
         response = Response(ResponseStatus.finish, None)
         yield response
 
-    def pause(self) -> None:
-        """Pause a job."""
-        ...
-
-    def stop(self) -> None:
-        """Stop a job."""
-        ...
+    @staticmethod
+    def clear() -> None:
+        """Clear itself when user sent `stop` signal"""
+        del Job.all_id
+        Job.all_id = None
 
     def list_repr(self, is_ready: bool = True) -> list[str]:
-        """return representation of a job for writing in CSV spreadsheet.
-        Order is according to 'header' in 'scheduler'.
+        """return the representation of a job for writing in a CSV spreadsheet.
+        Order is in according to 'header' in 'scheduler'.
         This is like __repr__, but it returns a list, not str.
         """
         # the same 'PROGRESS' status for all cases except for 'READY' status
         status = 'READY' if is_ready else 'PROGRESS'
-        # func = 'pickled stub',
         func = pickle_dumps(self.__targets[0])
         row = [self.__id,
                status,
@@ -159,9 +156,9 @@ class Job:
                self.dependencies,
                func,
                ]
-        row_of_str = []
+        row_with_strings = []
         for item in row:
             token = str(item)
             token.replace('\t', '    ')
-            row_of_str.append(token if token else 'ERROR')
-        return row_of_str
+            row_with_strings.append(token if token else 'ERROR')
+        return row_with_strings

@@ -4,7 +4,7 @@ import logging
 def get_custom_logger():
     """Return default logger for all files in this project."""
 
-    formatter = logging.Formatter('%(levelname)s-%(filename)s-%(funcName)s-%(lineno)d:\t%(message)s')
+    formatter = logging.Formatter('%(levelname)s-%(filename)s-%(funcName)s()-%(lineno)d:\t%(message)s')
 
     handler = logging.StreamHandler()
     handler.setFormatter(formatter)
