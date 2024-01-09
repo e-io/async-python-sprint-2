@@ -28,7 +28,7 @@ nav:
   - Главная: index.md
   - Как запускать этот проект: how-to-guides.md
   - Пример бэкапа: backup-spreadsheet.md
-  - class Scheduler (Планировщик): scheduler.md
+  - Scheduler and _Scheduler (Планировщик): scheduler.md
   - class Job (Задача): job.md
   - Тесты: tests.md
   - Дополнительно:
