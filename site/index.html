@@ -24,6 +24,9 @@
     
       <link rel="stylesheet" href="assets/stylesheets/main.50c56a3b.min.css">
       
+        
+        <link rel="stylesheet" href="assets/stylesheets/palette.06af60db.min.css">
+      
       
 
 
@@ -53,7 +56,12 @@
   </head>
   
   
-    <body dir="ltr">
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="cyan" data-md-color-accent="deep-purple">
   
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
@@ -105,8 +113,8 @@
       </div>
     </div>
     
+      
     
-      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
     
     
     
@@ -307,6 +315,26 @@
   
   
     <li class="md-nav__item">
+      <a href="backup-spreadsheet/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Пример бэкапа
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="scheduler/" class="md-nav__link">
         
   
@@ -376,10 +404,10 @@
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
         
           
-          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -390,8 +418,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_6">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
             <span class="md-nav__icon md-icon"></span>
             Дополнительно
           </label>
@@ -505,39 +533,47 @@
 <h1 id="_1">Проектное задание второго спринта</h1>
 <p>Спроектировать и реализовать планировщик задач для выполнения поступающих задач.</p>
 <h2 id="_2">Документация</h2>
-<p>Документация по этому проекту доступна благодаря использованию документатора MkDocs.
- - Онлайн</p>
-<pre><code class="language-shell">open https://e-io.github.io/async-python-sprint-2/
-</code></pre>
+<p>Документация по этому проекту доступна благодаря использованию документатора MkDocs.</p>
 <ul>
-<li>Офлайн:<ul>
-<li>файлы markdown - в папке docs/</li>
-<li>как сайт - site/index.html </li>
+<li>
+<p>Посмотреть документацию к этому проекту по второму спринту онлайн <a href="https://e-io.github.io/async-python-sprint-2/how-to-guides/">e-io.github.io/async-python-sprint-2</a></p>
+</li>
+<li>
+<p>Посмотреть офлайн:</p>
+<ul>
+<li>как сайт - откройте <code>site/index.html</code></li>
+<li>как отдельные файлы markdown - смотрите папку <code>docs/</code></li>
 </ul>
 </li>
 </ul>
-<p>Также сайт может генерироваться вживую при помощи команды</p>
-<pre><code class="language-shell">mkdocs serve  
-</code></pre>
+<p>Также сайт может генерироваться "на лету" при помощи команды
+<div class="language-shell highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>mkdocs<span class="w"> </span>serve<span class="w">  </span>
+</code></pre></div></p>
 <h2 id="_3">Описание задания</h2>
 <p><strong>1. Описать реализацию класса <code>Scheduler</code>.</strong></p>
-<p>Условия и требования:
-- Планировщик одновременно может выполнять до 10 задач (дефолтное значение, может быть изменено).
-- Возможность добавить задачу в планировщик и запустить её в рамках ограничений планировщика и настроек, указанных в задаче.
-- При штатном завершении работы планировщик сохраняет статус выполняемых и ожидающих задач.
-- После рестарта восстанавливается последнее состояние и задачи продолжают выполняться.</p>
+<p>Условия и требования:</p>
+<ul>
+<li>Планировщик одновременно может выполнять до 10 задач (дефолтное значение, может быть изменено).</li>
+<li>Возможность добавить задачу в планировщик и запустить её в рамках ограничений планировщика и настроек, указанных в задаче.</li>
+<li>При штатном завершении работы планировщик сохраняет статус выполняемых и ожидающих задач.</li>
+<li>После рестарта восстанавливается последнее состояние и задачи продолжают выполняться.</li>
+</ul>
 <p><strong>2. Описать реализацию класса <code>Job</code>.</strong></p>
-<p>Условия и требования:
-- У задачи может быть указана длительность выполнения (опциональный параметр). Если параметр указан, то задача прекращает выполняться, если время выполнения превысило указанный параметр.
-- У задачи может быть указано время запуска (опциональный параметр). Если параметр указан, то задача стартует в указанный временной период.
-- У задачи может быть указан параметр количества рестартов (опциональный параметр). Если в ходе выполнения задачи произошёл сбой или задачи-зависимости не были выполнены, то задача будет перезапущена указанное количество раз. Если параметр не указан, то количество рестартов равно 0.
-- У задачи может быть указаны зависимости — задача или задачи, от которых зависит её выполнение (опциональный параметр). Если параметр указан, то задача не может стартовать до момента, пока не будут завершены задачи-зависимости.</p>
+<p>Условия и требования:</p>
+<ul>
+<li>У задачи может быть указана длительность выполнения (опциональный параметр). Если параметр указан, то задача прекращает выполняться, если время выполнения превысило указанный параметр.</li>
+<li>У задачи может быть указано время запуска (опциональный параметр). Если параметр указан, то задача стартует в указанный временной период.</li>
+<li>У задачи может быть указан параметр количества рестартов (опциональный параметр). Если в ходе выполнения задачи произошёл сбой или задачи-зависимости не были выполнены, то задача будет перезапущена указанное количество раз. Если параметр не указан, то количество рестартов равно 0.</li>
+<li>У задачи может быть указаны зависимости — задача или задачи, от которых зависит её выполнение (опциональный параметр). Если параметр указан, то задача не может стартовать до момента, пока не будут завершены задачи-зависимости.</li>
+</ul>
 <p><strong>3. Проверить работу планировщика на различных задачах.</strong></p>
-<p>Условия и требования:
-- работа с файловой системой: создание, удаление, изменение директорий и файлов;
-- работа с файлами: создание, чтение, запись;
-- работа с сетью: обработка ссылок (GET-запросы) и анализ полученного результата;
-- описать конвеер выполнения основной задачи минимум из 3 задач, зависящих друг от друга и выполняющихся последовательно друг за другом.</p>
+<p>Условия и требования:</p>
+<ul>
+<li>работа с файловой системой: создание, удаление, изменение директорий и файлов;</li>
+<li>работа с файлами: создание, чтение, запись;</li>
+<li>работа с сетью: обработка ссылок (GET-запросы) и анализ полученного результата;</li>
+<li>описать конвейер выполнения основной задачи минимум из 3 задач, зависящих друг от друга и выполняющихся последовательно друг за другом.</li>
+</ul>
 <h2 id="_4">Требования к решению</h2>
 <ol>
 <li>Используйте корутины и генераторы, изученные в теоретической части.</li>
@@ -559,7 +595,7 @@
 <li>Используйте примитивы синхронизации, например, <a href="https://docs.python.org/3/library/threading.html#timer-objects">Timer</a> или <a href="https://docs.python.org/3/library/threading.html#condition-objects">Condition</a>.</li>
 <li>По возможности, решение должно полностью строиться на использовании корутин.</li>
 </ol>
-<p>Схематично сервис представлен на <a href="schema.png">диаграмме</a>{target="_blank"}.
+<p>Схематично сервис представлен на <a href="schema.png">диаграмме</a>.
 <img alt="image" src="schema.png" /></p>
 
 
